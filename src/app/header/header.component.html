@@ -1,0 +1,27 @@
+<div class="header" fxLayout="row">
+  <mat-toolbar color="warn">
+    <div fxFlex="10">
+      <button mat-button routerLink="invoice">Home</button>
+    </div>
+    <div fxFlex="80">
+      <mat-chip-list fxLayoutAlign="center" [fxShow.xs]="false">
+        <mat-chip routerLink="product" routerLinkActive="active">Products</mat-chip>
+        <mat-chip routerLink="customer" routerLinkActive="active">Customers</mat-chip>
+        <mat-chip routerLink="invoice" routerLinkActive="active">Invoices</mat-chip>
+      </mat-chip-list>
+      <div fxHide [fxHide.xs]="false" fxLayoutAlign="center">
+          <mat-menu #appMenu="matMenu">
+            <button mat-menu-item routerLink="product">Product</button>
+            <button mat-menu-item routerLink="customer">Customers</button>
+            <button mat-menu-item routerLink="invoice">Invoices</button>
+           </mat-menu>
+          <button mat-button [matMenuTriggerFor]="appMenu">
+              Menu
+          </button>
+      </div>
+    </div>
+    <div fxFlex="10">
+      <button mat-button>New Invoice</button>
+    </div>
+  </mat-toolbar>
+</div>

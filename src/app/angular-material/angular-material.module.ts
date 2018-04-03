@@ -5,6 +5,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
+import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import {MatButtonModule} from '@angular/material/button';
         MatMenuModule,
         MatChipsModule,
         MatIconModule,
-        MatButtonModule
+        MatButtonModule,
+        MatTableModule
     ]
 })
 export class AngularMaterialModule { }

@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {InvoiceService} from '../core/services/invoice.service';
+import { Observable } from 'rxjs/Observable';
+import { Invoice } from '../models/invoice';
+import 'rxjs/add/observable/combineLatest';
+import { CustomerService } from '../core/services/customer.service';
+import { Customer } from '../models/customer';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/combineLatest';
 
 @Component({
   selector: 'app-invoice',
@@ -7,13 +14,20 @@ import {InvoiceService} from '../core/services/invoice.service';
   styleUrls: ['./invoice.component.scss']
 })
 export class InvoiceComponent implements OnInit {
-
-  constructor(private invoiceService: InvoiceService) { }
-
+  invoices$: Observable<Invoice[]>;
+  displayedColumns = ['id', 'customer_name', 'discount', 'total', 'actions'];
+  constructor(private invoiceService: InvoiceService, private customerService: CustomerService) { }
   ngOnInit() {
     this.gitInvoice();
   }
   gitInvoice() {
-    this.invoiceService.getInvoice().subscribe(res => console.log(res));
+    this.invoices$ = Observable.combineLatest(this.invoiceService.invoices$,this.customerService.customers$)
+    .map(([invoices, customers]: [Invoice[], Customer[]]) => {
+      return invoices.map((invoice) => {
+        invoice.customer = customers.find(customer => customer.id === invoice.customer_id);
+        return invoice;
+      });
+    });
   }
+
 }

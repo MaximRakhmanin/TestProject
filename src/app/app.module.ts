@@ -10,7 +10,6 @@ import {HeaderComponent} from './header/header.component';
 import {AngularMaterialModule} from './angular-material/angular-material.module';
 
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +19,7 @@ import {AngularMaterialModule} from './angular-material/angular-material.module'
       AppRoutingModule,
       CoreModule,
       SharedModule,
-      AngularMaterialModule
+      AngularMaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

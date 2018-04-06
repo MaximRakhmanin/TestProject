@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
 import {Product} from '../../models/product';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ProductService {
-
+  products$: Observable<Product[]>;
   constructor(private http: HttpClient) { }
-  getProduct(): Observable<Product> {
-    return this.http.get<Product>('http://api.invoice-app.2muchcoffee.com/api/products');
+  getProducts() {
+    this.products$ = this.http.get<Product[]>('/products');
+  }
+  getProduct(id): Observable<Product> {
+    return this.http.get<Product>(`/products/${id}`);
   }
 }

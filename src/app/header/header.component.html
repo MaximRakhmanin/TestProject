@@ -7,7 +7,7 @@
       <mat-chip-list fxLayoutAlign="center" [fxShow.xs]="false">
         <mat-chip routerLink="product" routerLinkActive="active">Products</mat-chip>
         <mat-chip routerLink="customer" routerLinkActive="active">Customers</mat-chip>
-        <mat-chip routerLink="invoice" routerLinkActive="active">Invoices</mat-chip>
+        <mat-chip routerLink="invoice" routerLinkActive="active">Invoices({{ countInvoice$ | async}})</mat-chip>
       </mat-chip-list>
       <div fxHide [fxHide.xs]="false" fxLayoutAlign="center">
           <mat-menu #appMenu="matMenu">

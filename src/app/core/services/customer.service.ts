@@ -5,9 +5,12 @@ import {Customer} from '../../models/customer';
 
 @Injectable()
 export class CustomerService {
-
+  customers$: Observable<Customer[]>;
   constructor(private http: HttpClient) { }
-  getCustomer(): Observable<Customer> {
-    return this.http.get<Customer>('http://api.invoice-app.2muchcoffee.com/api/customers');
+  getCustomers() {
+    this.customers$ = this.http.get<Customer[]>('/customers');
+  }
+  getCustomer(id): Observable<Customer> {
+   return this.http.get<Customer>(`/customers/${id}`);
   }
 }

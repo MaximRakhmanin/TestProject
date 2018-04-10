@@ -1,43 +1,52 @@
 <div class="container">
   <h1 class="h">Invoice {{ (invoice$ | async)?.id }}</h1>
-  <form action="" [formGroup]="forms">
+  <form action="" [formGroup]="editForm">
       <mat-form-field>
         <mat-select formControlName="customer">
-            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.id">
+            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.name">
               {{ customer.name }}
             </mat-option>
         </mat-select>
       </mat-form-field>
     <div fxLayout="row">
-      <div fxFlex="50">
-        <mat-table [dataSource]="products$ | async">
-          <ng-container matColumnDef="product">
-            <mat-header-cell *matHeaderCellDef> Product </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-              <mat-form-field>
-                <mat-select formControlName="product">
-                  <mat-option *ngFor="let product of products$ | async" [value]="product.id">
-                    {{ product.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="quantity">
-            <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-             <input type="text" formControlName="text">
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="price">
-            <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{ element.price}} </mat-cell>
-          </ng-container>
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
+      <div fxFlex="80">
+         <div class="table">
+           <div>product</div>
+           <div>quantity</div>
+           <div>price</div>
+         </div>
+        <div formArrayName="product">
+          <div *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
+            <mat-form-field>
+              <mat-select [value]="product.value.productName">
+                <mat-option *ngFor="let product of products$ | async" [value]="product.name">
+                  {{ product.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <input matInput type="number" formControlName="productQuantity">
+            </mat-form-field>
+            <div class="">
+              {{ product.value.productPrice }}
+            </div>
+          </div>
+        </div>
+          <mat-form-field>
+            <mat-select formControlName="addProduct" placeholder="Add Product">
+              <mat-option *ngFor="let product of products$ | async" [value]="product.name">
+                {{ product.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input matInput type="number" formControlName="addquantity">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <input matInput type="number" formControlName="addprice">
+          </mat-form-field>
       </div>
-      <div fxFlex="50">
+      <div fxFlex="20">
         <span  fxLayoutAlign="center">Discount</span>
         <span  fxLayoutAlign="center">{{ (invoice$ | async)?.discount }}%</span>
       </div>

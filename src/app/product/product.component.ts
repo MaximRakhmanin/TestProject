@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
-  products$: Observable<Product>;
+  products$: Observable<Product[]>;
   displayedColumns = ['name', 'price'];
   constructor(private productService: ProductService) { }
 

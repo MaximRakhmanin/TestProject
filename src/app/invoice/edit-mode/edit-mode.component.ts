@@ -6,6 +6,9 @@ import { Product } from '../../models/product';
 import { Invoice } from '../../models/invoice';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProductService } from '../../core/services/product.service';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-edit-mode',
@@ -14,25 +17,31 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class EditModeComponent implements OnInit {
   customers$: Observable<Customer[]>;
-  products$: Observable<Product[]>;
+  products: Product[];
   invoice$: Observable<Invoice>;
-  products;
+  productsItem$;
+  selectedProduct;
   editForm: FormGroup;
   constructor(
     private customerService: CustomerService,
     private invoiceItemService: InvoiceItemService,
+    private productService: ProductService,
     private fb: FormBuilder
   ) {
   }
   ngOnInit() {
     this.validator();
     this.getData();
+    this.getProduct();
+    //this.editForm.valueChanges.subscribe(res => console.log(res));
+    this.product.controls.forEach(group => group.valueChanges.subscribe(res => console.log(res)));
   }
   getData() {
+    this.productService.products$.subscribe(res => this.products = res);
     this.customers$ = this.customerService.customers$;
     this.invoiceItemService.customer$.subscribe(res => this.editForm.controls['customer'].setValue(res.name));
     this.invoice$ = this.invoiceItemService.invoice$;
-    this.products$ = Observable.combineLatest(this.invoiceItemService.products$,
+    this.productsItem$ = Observable.combineLatest(this.invoiceItemService.products$,
       this.invoiceItemService.items$).map(([products, items]) => {
       return products.map(product => {
         product.item = items.find(item => {
@@ -40,15 +49,15 @@ export class EditModeComponent implements OnInit {
         return product;
       });
     });
-    this.products$.subscribe(res => this.products = res.map(product => {
+    this.productsItem$.subscribe(res => res.map(product => {
       const p = <FormArray>this.editForm.controls['product'];
       p.push(this.fb.group({
+        productId: product.id,
         productName: product.name,
         productQuantity: product.item.quantity,
         productPrice: product.price
       })); }
       ));
-    console.log(this.product);
   }
   get product(): FormArray {
     return this.editForm.get('product') as FormArray;
@@ -58,8 +67,16 @@ export class EditModeComponent implements OnInit {
       customer: '',
       product: this.fb.array([]),
       addProduct: '',
-      addquantity: '',
+      addquantity: [1, Validators.required],
       addprice: ''
     });
   }
+  getProduct() {
+    this.editForm.controls['addProduct'].valueChanges.subscribe(res => {
+     this.selectedProduct = this.products.find(product => product.id === res);
+  });
+}
+  //getPro(i) {
+  //  this.product.at(i).valueChanges.take(1).subscribe(res => console.log(res));
+  //}
 }

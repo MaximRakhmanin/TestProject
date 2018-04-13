@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { InvoiceItem } from '../../models/invoice-item';
 import { Product } from '../../models/product';
@@ -12,6 +12,12 @@ import { InvoiceService } from './invoice.service';
 import { CustomerService } from './customer.service';
 import { Invoice } from '../../models/invoice';
 import { Customer } from '../../models/customer';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+  })
+};
 
 @Injectable()
 export class InvoiceItemService {
@@ -31,5 +37,8 @@ export class InvoiceItemService {
     this.products$ = this.items$
     .switchMap(items => Observable.zip(...items.map(item => this.productService.getProduct(item.product_id))));
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
+  }
+  setItem(id, item) {
+    return this.http.post(`/invoices/${id}/items`, item, httpOptions);
   }
 }

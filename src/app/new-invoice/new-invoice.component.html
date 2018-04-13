@@ -1,0 +1,60 @@
+<div class="container">
+  <form [formGroup]="invoiceForm">
+    <mat-form-field>
+      <mat-select formControlName="customer" placeholder="Select Name">
+        <mat-option *ngFor="let customer of customers$ | async " [value]="customer.id">{{ customer.name}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="invoiceForm.get('customer')?.invalid ">Selected Customer</mat-error>
+    </mat-form-field>
+    <div fxLayout="row">
+      <div fxFlex="70">
+        <table cellpadding="8">
+          <tr>
+            <th>Products</th><th>Quantity</th><th>Price</th>
+          </tr>
+          <div formArrayName="product">
+            <div *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
+              <tr>
+                <td>
+                  <mat-form-field>
+                    <mat-select formControlName="productId" placeholder="AddProduct">
+                      <mat-option *ngFor="let product of products" [value]="product.id">{{ product.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="quantity" formControlName="quantity">
+                  </mat-form-field>
+                </td>
+                <td>
+                  {{ product.value?.price }}
+                </td>
+                <td>
+                  <button mat-button color="warn" (click)="delete(i)">Delete</button>
+                </td>
+             </tr>
+            </div>
+          </div>
+        </table>
+        <div  fxFlexAlign="center" style="margin-left: 45%;">
+          <button mat-button color="primary" (click)="addProduct()">Add Product</button>
+        </div>
+      </div>
+      <div fxFlex="30">
+        <div fxLayoutAlign="center" class="disc">Discount</div>
+        <div fxLayoutAlign="center">
+          <mat-form-field>
+            <input matInput type="number" placeholder="%" formControlName="discount"  max="50">
+            <mat-error *ngIf="invoiceForm.get('discount')?.invalid ">Max discount 50%</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div class="total" fxFlex="10">Total</div>
+      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total }}</div>
+      <div fxFlex="10"><button mat-button (click)="setInvoice()" color="primary">save</button></div>
+    </div>
+  </form>
+</div>

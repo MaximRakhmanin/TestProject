@@ -8,12 +8,14 @@ import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
 import {HeaderComponent} from './header/header.component';
 import {AngularMaterialModule} from './angular-material/angular-material.module';
+import { ModalComponent } from './modal/modal.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
       HeaderComponent,
+      ModalComponent
   ],
   imports: [
       AppRoutingModule,
@@ -22,6 +24,7 @@ import {AngularMaterialModule} from './angular-material/angular-material.module'
       AngularMaterialModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalComponent]
 })
 export class AppModule { }

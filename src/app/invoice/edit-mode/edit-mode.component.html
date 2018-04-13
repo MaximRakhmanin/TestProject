@@ -10,7 +10,7 @@
       </mat-form-field>
     <div fxLayout="row">
       <div fxFlex="80">
-         <div class="table">
+         <div class="table" fxLayout="row">
            <div>product</div>
            <div>quantity</div>
            <div>price</div>
@@ -18,8 +18,8 @@
         <div formArrayName="product">
           <div *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
             <mat-form-field>
-              <mat-select [value]="product.value.productName">
-                <mat-option *ngFor="let product of products$ | async" [value]="product.name">
+              <mat-select [value]="product.value.productName" formControlName="productName">
+                <mat-option *ngFor="let product of products" [value]="product.name">
                   {{ product.name }}
                 </mat-option>
               </mat-select>
@@ -27,14 +27,14 @@
             <mat-form-field class="example-full-width">
               <input matInput type="number" formControlName="productQuantity">
             </mat-form-field>
-            <div class="">
-              {{ product.value.productPrice }}
-            </div>
+            <mat-form-field class="example-full-width">
+              <input matInput type="number" formControlName="productPrice" [value]="product.value.productPrice * product.value.productQuantity">
+            </mat-form-field>
           </div>
         </div>
           <mat-form-field>
             <mat-select formControlName="addProduct" placeholder="Add Product">
-              <mat-option *ngFor="let product of products$ | async" [value]="product.name">
+              <mat-option *ngFor="let product of products" [value]="product.id">
                 {{ product.name }}
               </mat-option>
             </mat-select>
@@ -42,9 +42,9 @@
           <mat-form-field class="example-full-width">
             <input matInput type="number" formControlName="addquantity">
           </mat-form-field>
-          <mat-form-field class="example-full-width">
-            <input matInput type="number" formControlName="addprice">
-          </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput type="number" formControlName="addprice" [value]="selectedProduct?.price * editForm.get('addquantity').value">
+        </mat-form-field>
       </div>
       <div fxFlex="20">
         <span  fxLayoutAlign="center">Discount</span>
@@ -52,4 +52,8 @@
       </div>
     </div>
   </form>
+  <div class="total">
+    <div>TOTAL</div>
+    <div></div>
+  </div>
 </div>

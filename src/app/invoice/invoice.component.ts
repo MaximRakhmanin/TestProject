@@ -43,7 +43,9 @@ export class InvoiceComponent implements OnInit {
     const dialogRef = this.dialog.open(ModalComponent, {
       width: '300px',
       data: {
-        id: id
+        id: id,
+        title: 'Delete',
+        content: 'Are you sure you want to delete an invoice?'
       }
     });
     dialogRef.afterClosed().subscribe(res => {
@@ -53,7 +55,7 @@ export class InvoiceComponent implements OnInit {
     });
   }
   delete(id) {
-    this.invoiceService.delete(id).subscribe(r => console.log(r));
+    this.invoiceService.delete(id).subscribe();
     this.invoices$ = this.invoices$.map(arr => {
       return arr.filter(invoice => invoice.id !== id);
     });

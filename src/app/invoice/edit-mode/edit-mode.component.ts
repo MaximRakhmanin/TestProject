@@ -33,8 +33,7 @@ export class EditModeComponent implements OnInit {
     this.validator();
     this.getData();
     this.getProduct();
-    //this.editForm.valueChanges.subscribe(res => console.log(res));
-    this.product.controls.forEach(group => group.valueChanges.subscribe(res => console.log(res)));
+    this.addProduct();
   }
   getData() {
     this.productService.products$.subscribe(res => this.products = res);
@@ -72,11 +71,18 @@ export class EditModeComponent implements OnInit {
     });
   }
   getProduct() {
-    this.editForm.controls['addProduct'].valueChanges.subscribe(res => {
-     this.selectedProduct = this.products.find(product => product.id === res);
-  });
+   console.log(this.product.controls);
 }
-  //getPro(i) {
-  //  this.product.at(i).valueChanges.take(1).subscribe(res => console.log(res));
-  //}
+  addProduct() {
+    this.editForm.get('addProduct').valueChanges.subscribe(res => {
+      const product = this.products.find(prod => prod.id === res);
+      const p = <FormArray>this.editForm.controls['product'];
+      p.push(this.fb.group({
+        productId: product.id,
+        productName: product.name,
+        productQuantity: this.editForm.get('addquantity').value,
+        productPrice: product.price
+      }));
+    });
+  }
 }

@@ -7,9 +7,17 @@ import { ProductService } from '../core/services/product.service';
 import { Product } from '../models/product';
 import { Subscription } from 'rxjs/Subscription';
 import { InvoiceService } from '../core/services/invoice.service';
-import 'rxjs/add/operator/take';
 import { InvoiceItemService } from '../core/services/invoice-item.service';
 import { Invoice } from '../models/invoice';
+import { ModalComponent } from '../modal/modal.component';
+import { MatDialog } from '@angular/material';
+import { ModalService } from '../core/services/modal.service';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/observable/zip';
+
 
 @Component({
   selector: 'app-new-invoice',
@@ -19,15 +27,18 @@ import { Invoice } from '../models/invoice';
 export class NewInvoiceComponent implements OnInit, OnDestroy {
   invoiceForm: FormGroup;
   customers$: Observable<Customer[]>;
-  products: Product[];
-  selectedProduct: Product;
+  products$: Observable<Product[]>;
+  product$: Observable<Product>;
   subscriber: Subscription;
+  success = false;
   constructor(
     private fb: FormBuilder,
     private customerService: CustomerService,
     private productService: ProductService,
     private invoiceService: InvoiceService,
-    private invoiceItemService: InvoiceItemService
+    private invoiceItemService: InvoiceItemService,
+    private dialog: MatDialog,
+    private modalService: ModalService
     ) { }
 
   ngOnInit() {
@@ -37,7 +48,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   getData() {
     this.customers$ = this.customerService.customers$;
-    this.subscriber = this.productService.products$.subscribe(res => this.products = res);
+    this.products$ = this.productService.products$;
   }
   setInvoice() {
     if (this.invoiceForm.valid) {
@@ -47,21 +58,32 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
         discount: this.invoiceForm.value.discount || 0,
         total: this.total
       };
-      this.subscriber = this.invoiceService.setInvoice(invoice).subscribe((res: Invoice) => {
-          if (res) {
-            this.addItem(res.id);
-          }
-        },
-        error => console.log(error.error));
+     this.invoiceService.setInvoice(invoice)
+      .switchMap((inv: Invoice): any => {
+        return this.addItem(inv.id).subscribe();
+      });
+     this.success = true;
+     setTimeout(() => this.success = false, 4000);
     }
+  }
+  addItem(id) {
+    const arr = this.invoiceForm.value.product.map(product => {
+        const item = {
+          invoice_id: id,
+          product_id: product.productId,
+          quantity: product.quantity
+        };
+        this.invoiceItemService.setItem(id, item).subscribe();
+    });
+    return Observable.zip([...arr]);
   }
   validate() {
     this.invoiceForm = this.fb.group({
       customer: ['', Validators.required],
       product: this.fb.array([
         this.fb.group({
-          productId: null,
-          quantity: [0, [Validators.required]],
+          productId: ['', Validators.required],
+          quantity: [0, [Validators.required, Validators.min(1)]],
           price: 0
         })
       ]),
@@ -69,12 +91,20 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     });
   }
   getProduct() {
-    this.product.controls.forEach((control, i) => {
-      control.valueChanges.subscribe(res => {
-        this.selectedProduct = this.products.find(product => product.id === res.productId);
-        control.value.price = +(this.selectedProduct.price * control.value.quantity).toFixed(2);
+    this.product.controls.forEach(control => {
+     this.product$ = Observable.combineLatest(this.productService.products$, control.valueChanges)
+      .map(([products, invoiceItem]) => {
+       const product = products.find(prod => {
+          return prod.id === invoiceItem.productId;
+        });
+       if (product) {
+         product.subtotal = +(product.price * control.value.quantity).toFixed(2) || 0;
+         control.value.price = product.subtotal || 0;
+         return product;
+       }
       });
     });
+    this.subscriber = this.product$.subscribe();
   }
   addProduct() {
     const arr = <FormArray>this.invoiceForm.controls['product'];
@@ -89,18 +119,22 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     const arr = <FormArray>this.invoiceForm.controls['product'];
     arr.removeAt(index);
   }
-  addItem(id) {
-    this.invoiceForm.value.product.forEach(product => {
-      const item = {
-        invoice_id: id,
-        product_id: product.productId,
-        quantity: product.quantity
-      };
-      this.subscriber = this.invoiceItemService.setItem(id, item).subscribe(res => console.log(res));
-    });
+  openDialog() {
+      this.dialog.open(ModalComponent, {
+        width: '300px',
+        data: {
+          title: 'Warning',
+          content: 'Are you sure you want to exit without saving?'
+        }
+      });
   }
+
   canDeactivate() {
-   return confirm('Are you sure you want to quit?');
+    if (this.invoiceForm.touched) {
+     this.openDialog();
+     return this.modalService.status$;
+    }
+    return true;
   }
   get product(): FormArray {
     return this.invoiceForm.get('product') as FormArray;
@@ -110,7 +144,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     this.product.controls.forEach(control => {
       total += +(control.value.price * (1 - this.invoiceForm.get('discount').value / 100));
     });
-    return +total.toFixed(2);
+    return +total.toFixed(2) || 0;
   }
   ngOnDestroy() {
     this.subscriber.unsubscribe();

@@ -13,7 +13,6 @@ const httpOptions = {
 @Injectable()
 export class InvoiceService {
   invoices$: Observable<Invoice[]>;
-  inv;
   constructor(private http: HttpClient) { }
   getInvoices() {
     this.invoices$ = this.http.get<Invoice[]>('/invoices');

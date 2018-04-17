@@ -38,7 +38,7 @@ export class InvoiceItemService {
     .switchMap(items => Observable.zip(...items.map(item => this.productService.getProduct(item.product_id))));
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
   }
-  setItem(id, item) {
-    return this.http.post(`/invoices/${id}/items`, item, httpOptions);
+  setItem(id, item): Observable<InvoiceItem[]> {
+    return this.http.post<InvoiceItem[]>(`/invoices/${id}/items`, item, httpOptions);
   }
 }

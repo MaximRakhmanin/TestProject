@@ -3,13 +3,17 @@ import { NgModule } from '@angular/core';
 import { CustomerRoutingModule } from './customer-routing.module';
 import {CustomerComponent} from './customer.component';
 import {SharedModule} from '../shared/shared.module';
-import {AngularMaterialModule} from '../angular-material/angular-material.module';
+import { MatInputModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   imports: [
     CustomerRoutingModule,
       SharedModule,
-      AngularMaterialModule
+      MatSelectModule,
+      MatFormFieldModule,
+      MatInputModule,
   ],
   declarations: [
       CustomerComponent

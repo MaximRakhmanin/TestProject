@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { NewInvoiceComponent } from './new-invoice.component';
-import { NewInvoiceResolverService } from '../shared/resolvers/new-invoice-resolver.service';
-import { CanDeactivateGuard } from '../shared/guards/can-deactivate-invoice.guard';
+import { CanDeactivateGuard } from '../../core/guards/can-deactivate-invoice.guard';
+import { NewInvoiceResolverService } from '../../core/resolvers/new-invoice-resolver.service';
+
+
 
 const routes: Routes = [
   { path: '', component: NewInvoiceComponent,

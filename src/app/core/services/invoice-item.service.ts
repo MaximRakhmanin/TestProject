@@ -23,20 +23,14 @@ const httpOptions = {
 export class InvoiceItemService {
   items$: Observable<InvoiceItem[]>;
   products$: Observable<Product[]>;
-  invoice$: Observable<Invoice>;
   customer$: Observable<Customer>;
   constructor(
     private http: HttpClient,
-    private productService: ProductService,
-    private invoiceService: InvoiceService,
-    private customerService: CustomerService
+    private invoiceService: InvoiceService
   ) {}
-  getItem(id) {
-    this.items$ = this.http.get<InvoiceItem[]>(`/invoices/${id}/items`);
-    this.invoice$ = this.invoiceService.getInvoice(id);
-    this.products$ = this.items$
-    .switchMap(items => Observable.zip(...items.map(item => this.productService.getProduct(item.product_id))));
-    this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
+  getItem(id): Observable<InvoiceItem[]> {
+    this.invoiceService.getInvoice(id);
+   return this.items$ = this.http.get<InvoiceItem[]>(`/invoices/${id}/items`);
   }
   setItem(id, item): Observable<InvoiceItem[]> {
     return this.http.post<InvoiceItem[]>(`/invoices/${id}/items`, item, httpOptions);

@@ -3,16 +3,25 @@ import { CommonModule } from '@angular/common';
 
 import { InvoiceRoutingModule } from './invoice-routing.module';
 import {InvoiceComponent} from './invoice.component';
-import { AngularMaterialModule } from '../angular-material/angular-material.module';
+import { MatInputModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogModule } from '@angular/material/dialog';
+import { SharedModule } from '../shared/shared.module';
+import { CreateProductComponent } from './create-product/create-product.component';
 
 @NgModule({
   imports: [
     CommonModule,
     InvoiceRoutingModule,
-    AngularMaterialModule
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDialogModule,
+    SharedModule
   ],
   declarations: [
-      InvoiceComponent
+      InvoiceComponent,
   ]
 })
 export class InvoiceModule { }

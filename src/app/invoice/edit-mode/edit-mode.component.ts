@@ -9,6 +9,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/map';
+import { InvoiceService } from '../../core/services/invoice.service';
 
 @Component({
   selector: 'app-edit-mode',
@@ -25,6 +26,7 @@ export class EditModeComponent implements OnInit {
   constructor(
     private customerService: CustomerService,
     private invoiceItemService: InvoiceItemService,
+    private invoiceService: InvoiceService,
     private productService: ProductService,
     private fb: FormBuilder
   ) {
@@ -39,7 +41,7 @@ export class EditModeComponent implements OnInit {
     this.productService.products$.subscribe(res => this.products = res);
     this.customers$ = this.customerService.customers$;
     this.invoiceItemService.customer$.subscribe(res => this.editForm.controls['customer'].setValue(res.name));
-    this.invoice$ = this.invoiceItemService.invoice$;
+    this.invoice$ = this.invoiceService.invoice$;
     this.productsItem$ = Observable.combineLatest(this.invoiceItemService.products$,
       this.invoiceItemService.items$).map(([products, items]) => {
       return products.map(product => {

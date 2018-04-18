@@ -7,21 +7,25 @@ import { AppComponent } from './app.component';
 import {CoreModule} from './core/core.module';
 import {SharedModule} from './shared/shared.module';
 import {HeaderComponent} from './header/header.component';
-import {AngularMaterialModule} from './angular-material/angular-material.module';
 import { ModalComponent } from './modal/modal.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatChipsModule } from '@angular/material/chips';
 
 
 @NgModule({
   declarations: [
     AppComponent,
       HeaderComponent,
-      ModalComponent
+      ModalComponent,
   ],
   imports: [
       AppRoutingModule,
       CoreModule,
       SharedModule,
-      AngularMaterialModule,
+      MatToolbarModule,
+      MatMenuModule,
+      MatChipsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

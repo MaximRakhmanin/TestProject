@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {InvoiceComponent} from './invoice.component';
-import { InvoiceResolverService } from '../shared/resolvers/invoice-resolver.service';
-import { CustomerResolverService } from '../shared/resolvers/customer-resolver.service';
+import { InvoiceResolverService } from '../core/resolvers/invoice-resolver.service';
+import { CustomerResolverService } from '../core/resolvers/customer-resolver.service';
 
 const routes: Routes = [
   {
@@ -11,7 +11,8 @@ const routes: Routes = [
     resolve: {invoice: InvoiceResolverService, customer: CustomerResolverService},
   },
  {path: 'view/:id', loadChildren: 'app/invoice/view-mode/view-mode.module#ViewModeModule'},
-  {path: 'edit/:id', loadChildren: 'app/invoice/edit-mode/edit-mode.module#EditModeModule'}
+  {path: 'edit/:id', loadChildren: 'app/invoice/edit-mode/edit-mode.module#EditModeModule'},
+  {path: 'new', loadChildren: 'app/invoice/new-invoice/new-invoice.module#NewInvoiceModule'}
 ];
 
 @NgModule({

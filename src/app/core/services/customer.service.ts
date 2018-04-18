@@ -7,8 +7,8 @@ import {Customer} from '../../models/customer';
 export class CustomerService {
   customers$: Observable<Customer[]>;
   constructor(private http: HttpClient) { }
-  getCustomers() {
-    this.customers$ = this.http.get<Customer[]>('/customers');
+  getCustomers(): Observable<Customer[]> {
+   return this.customers$ = this.http.get<Customer[]>('/customers');
   }
   getCustomer(id): Observable<Customer> {
    return this.http.get<Customer>(`/customers/${id}`);

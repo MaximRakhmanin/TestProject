@@ -1,22 +1,23 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomerService } from '../core/services/customer.service';
 import { Observable } from 'rxjs/Observable';
-import { Customer } from '../models/customer';
-import { ProductService } from '../core/services/product.service';
-import { Product } from '../models/product';
 import { Subscription } from 'rxjs/Subscription';
-import { InvoiceService } from '../core/services/invoice.service';
-import { InvoiceItemService } from '../core/services/invoice-item.service';
-import { Invoice } from '../models/invoice';
-import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material';
-import { ModalService } from '../core/services/modal.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/zip';
+import { ModalService } from '../../core/services/modal.service';
+import { Customer } from '../../models/customer';
+import { Product } from '../../models/product';
+import { CustomerService } from '../../core/services/customer.service';
+import { ProductService } from '../../core/services/product.service';
+import { InvoiceItemService } from '../../core/services/invoice-item.service';
+import { InvoiceService } from '../../core/services/invoice.service';
+import { Invoice } from '../../models/invoice';
+import { ModalComponent } from '../../modal/modal.component';
 
 
 @Component({

@@ -18,6 +18,7 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { ModalComponent } from '../../modal/modal.component';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/shareReplay';
 
 
 @Component({
@@ -63,6 +64,9 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       return products.find(product => product.id === productId);
     });
     this.subscriber = this.product$.subscribe(res => this.addProduct(res));
+    this.invoiceForm.get('discount').valueChanges.subscribe(res => {
+      this.getPrice();
+    });
   }
   validate() {
     this.invoiceForm = new FormGroup({
@@ -78,11 +82,10 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       product_id: new FormControl(product.id, [Validators.required]),
       quantity: new FormControl(1),
     }));
-    //this.productPrice.push(product.price);
   }
   getData() {
     this.customers$ = this.customerService.customers$;
-    this.products$ = this.productService.products$;
+    this.products$ = this.productService.products$.shareReplay();
   }
   setInvoice() {
     if (this.invoiceForm.valid) {
@@ -98,7 +101,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
      setTimeout(() => this.success = false, 4000);
     }
   }
-  getPrice(id) {
+  getPrice() {
     const items$ = Observable.of(this.product.value);
     Observable.combineLatest(
       items$,
@@ -115,15 +118,6 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
        return product;
      });
     }).subscribe(res => this.getTotal(res));
-    //let total = 0;
-    //this.productPrice[index] = price;
-    //this.productPrice.forEach(p => {
-    //  total += p;
-    //});
-    //this.total = +total.toFixed(2);
-    //this.discount.valueChanges.subscribe(res => {
-    //  this.total = +(total * (1 - res / 100)).toFixed(2);
-    //});
   }
   getTotal(products) {
     this.total = 0;

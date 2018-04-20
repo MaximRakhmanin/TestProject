@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ProductService} from '../core/services/product.service';
 import {Product} from '../models/product';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/shareReplay';
 
 @Component({
   selector: 'app-product',

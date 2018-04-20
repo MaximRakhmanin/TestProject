@@ -1,7 +1,7 @@
 <td>
   <mat-form-field>
       <mat-select [formControl]="prod" placeholder="AddProduct">
-        <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
+        <mat-option *ngFor="let product of products" [value]="product.id">{{ product.name}}</mat-option>
       </mat-select>
   </mat-form-field>
 </td>

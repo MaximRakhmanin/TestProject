@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import {FormControl} from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
-import { Product } from '../../models/product';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/delay';
 
 @Component({
   selector: 'app-create-product',
@@ -12,11 +12,11 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./create-product.component.scss']
 })
 export class CreateProductComponent implements OnInit {
-  @Input() products$;
+  @Input() products;
   @Input() product;
   @Output() total = new EventEmitter();
   @Output() del = new EventEmitter();
-  selectedPrice;
+  selectedPrice: number;
   constructor() { }
   get prod() {
     return this.product.get('product_id') as FormControl;
@@ -28,13 +28,10 @@ export class CreateProductComponent implements OnInit {
     this.getProduct();
   }
   getProduct() {
-    Observable.combineLatest(
-      this.products$,
-      this.product.valueChanges
-    )
-    .map(([products, controls]: [Product[], any]) => {
-      const prod = products.find(product => product.id === controls.product_id);
-      return prod;
+    this.product.valueChanges
+    .startWith(this.product.value)
+    .map((controls: any) => {
+      return this.products.find(product => product.id === controls.product_id);
     }).subscribe(res => {
       this.selectedPrice = +(res.price * this.quantity.value).toFixed(2);
       this.total.emit(res.id);

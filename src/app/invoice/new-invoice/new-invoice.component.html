@@ -17,7 +17,7 @@
           <ng-container formArrayName="product">
                 <tr *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
                   <app-create-product
-                    [products$]="products$"
+                    [products]="products$ | async"
                     [product]="product"
                     (total)="getPrice($event, i)"
                     (del)="delete(i)">

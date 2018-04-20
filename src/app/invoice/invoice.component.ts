@@ -18,18 +18,15 @@ import { ModalComponent } from '../modal/modal.component';
 export class InvoiceComponent implements OnInit {
   invoices$: Observable<Invoice[]>;
   displayedColumns = ['id', 'customer_name', 'discount', 'total', 'actions'];
-  
   constructor(
     private invoiceService: InvoiceService,
     private customerService: CustomerService,
     private dialog: MatDialog
   ) {
   }
-  
   ngOnInit() {
     this.gitInvoice();
   }
-  
   gitInvoice() {
     this.invoices$ = Observable.combineLatest(this.invoiceService.invoices$, this.customerService.customers$)
     .map(([invoices, customers]: [Invoice[], Customer[]]) => {

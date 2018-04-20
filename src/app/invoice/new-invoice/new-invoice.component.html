@@ -1,51 +1,52 @@
 <div class="container">
   <form [formGroup]="invoiceForm">
     <mat-form-field>
-      <mat-select formControlName="customer" placeholder="Select Name">
-        <mat-option *ngFor="let customer of customers$ | async " [value]="customer.id">{{ customer.name}}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="invoiceForm.get('customer')?.invalid ">Selected Customer</mat-error>
+      <div [formGroup]="invoiceForm">
+        <mat-select formControlName="customer" placeholder="Select Name">
+          <mat-option *ngFor="let customer of customers$ | async " [value]="customer.id">{{ customer.name}}</mat-option>
+        </mat-select>
+      </div>
     </mat-form-field>
     <div fxLayout="row">
-      <div fxFlex="70">
+      <div fxFlex="90">
         <table cellpadding="15">
           <tr>
             <th>Products</th><th>Quantity</th><th>Price</th>
           </tr>
+          <div [formGroup]="invoiceForm">
           <ng-container formArrayName="product">
-              <tr *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
+                <tr *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
+                  <app-create-product
+                    [products$]="products$"
+                    [product]="product"
+                    (total)="getPrice($event, i)"
+                    (del)="delete(i)">
+                  </app-create-product>
+               </tr>
+              <tr>
                 <td>
                   <mat-form-field>
-                    <mat-select formControlName="productId" placeholder="AddProduct">
-                      <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="invoiceForm.get('productId')?.invalid ">Product required</mat-error>
-                  </mat-form-field>
-                </td>
-                <td>
-                  <mat-form-field>
-                    <input matInput type="number" placeholder="quantity" formControlName="quantity" min="0">
+                    <div [formGroup]="invoiceForm">
+                      <mat-select formControlName="addproduct" placeholder="AddProduct">
+                        <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
+                      </mat-select>
+                    </div>
                   </mat-form-field>
                 </td>
                 <td *ngIf="product">
-                  {{ product.value?.price }}
                 </td>
-                <td>
-                  <button mat-button color="warn" (click)="delete(i)">Delete</button>
-                </td>
-             </tr>
-          </ng-container>
+              </tr>
+            </ng-container>
+          </div>
         </table>
-        <div  fxFlexAlign="center" style="margin-left: 45%;">
-          <button mat-button color="primary" (click)="addProduct()">Add Product</button>
-        </div>
       </div>
-      <div fxFlex="30">
+      <div fxFlex="10">
         <div fxLayoutAlign="center" class="disc">Discount</div>
         <div fxLayoutAlign="center">
           <mat-form-field>
-            <input matInput type="number" placeholder="%" formControlName="discount"  max="50" min="0">
-            <mat-error *ngIf="invoiceForm.get('discount')?.invalid ">Max discount 50%</mat-error>
+            <div [formGroup]="invoiceForm">
+              <input matInput type="number" placeholder="%" formControlName="discount"  max="50" min="0">
+            </div>
           </mat-form-field>
         </div>
       </div>

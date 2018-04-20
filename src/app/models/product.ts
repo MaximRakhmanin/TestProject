@@ -6,4 +6,5 @@ export class Product {
     price: number;
     item?: InvoiceItem;
     subtotal?: number;
+    quantity?: number;
 }

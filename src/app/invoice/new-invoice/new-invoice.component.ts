@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { MatDialog } from '@angular/material';
@@ -16,8 +16,8 @@ import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
-import { Invoice } from '../../models/invoice';
 import { ModalComponent } from '../../modal/modal.component';
+import 'rxjs/add/observable/of';
 
 
 @Component({
@@ -31,6 +31,8 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   products$: Observable<Product[]>;
   product$: Observable<Product>;
   subscriber: Subscription;
+  productPrice = [];
+  total = 0;
   success = false;
   constructor(
     private fb: FormBuilder,
@@ -41,11 +43,42 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private modalService: ModalService
     ) { }
-
+  get prod() {
+    return this.invoiceForm.get('addproduct');
+  }
+  get product(): FormArray {
+    return this.invoiceForm.get('product') as FormArray;
+  }
+  get discount() {
+    return this.invoiceForm.get('discount');
+  }
   ngOnInit() {
     this.validate();
-    this.getProduct();
     this.getData();
+    this.product$ = Observable.combineLatest(
+      this.products$,
+      this.prod.valueChanges
+    )
+    .map(([products, productId]: [Product[], number]) => {
+      return products.find(product => product.id === productId);
+    });
+    this.subscriber = this.product$.subscribe(res => this.addProduct(res));
+  }
+  validate() {
+    this.invoiceForm = new FormGroup({
+      customer: new FormControl('', [Validators.required]),
+      product: new FormArray([]),
+      discount: new FormControl('', [Validators.max(50)]),
+      addproduct: new FormControl('')
+    });
+  }
+  addProduct(product) {
+    const arr = <FormArray>this.product;
+    arr.push(new FormGroup({
+      product_id: new FormControl(product.id, [Validators.required]),
+      quantity: new FormControl(1),
+    }));
+    //this.productPrice.push(product.price);
   }
   getData() {
     this.customers$ = this.customerService.customers$;
@@ -54,69 +87,52 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   setInvoice() {
     if (this.invoiceForm.valid) {
       const invoice = {
-        items: [],
+        items: this.invoiceForm.value.product,
         customer_id: this.invoiceForm.value.customer,
         discount: this.invoiceForm.value.discount || 0,
         total: this.total
       };
      this.invoiceService.setInvoice(invoice)
-      .switchMap((inv: Invoice): any => {
-        return this.addItem(inv.id).subscribe();
-      });
+      .subscribe(res => console.log(res));
      this.success = true;
      setTimeout(() => this.success = false, 4000);
     }
   }
-  addItem(id) {
-    const arr = this.invoiceForm.value.product.map(product => {
-        const item = {
-          invoice_id: id,
-          product_id: product.productId,
-          quantity: product.quantity
-        };
-        this.invoiceItemService.setItem(id, item).subscribe();
-    });
-    return Observable.zip([...arr]);
-  }
-  validate() {
-    this.invoiceForm = this.fb.group({
-      customer: ['', Validators.required],
-      product: this.fb.array([
-        this.fb.group({
-          productId: ['', Validators.required],
-          quantity: [0, [Validators.required, Validators.min(1)]],
-          price: 0
-        })
-      ]),
-      discount: ['', Validators.max(50)]
-    });
-  }
-  getProduct() {
-    this.product.controls.forEach(control => {
-     this.product$ = Observable.combineLatest(this.productService.products$, control.valueChanges)
-      .map(([products, invoiceItem]) => {
-       const product = products.find(prod => {
-          return prod.id === invoiceItem.productId;
-        });
-       if (product) {
-         product.subtotal = +(product.price * control.value.quantity).toFixed(2) || 0;
-         control.value.price = product.subtotal || 0;
-         return product;
-       }
+  getPrice(id) {
+    const items$ = Observable.of(this.product.value);
+    Observable.combineLatest(
+      items$,
+      this.products$)
+    .map(([items, products]: [any, Product[]]) => {
+      return items.map(item => {
+        const prod = products.find(product => product.id === item.product_id);
+        prod.quantity = item.quantity;
+        return prod;
       });
-    });
-    this.subscriber = this.product$.subscribe();
+    }).map(products => {
+     return products.map(product => {
+       product.invoicePrice = product.price * product.quantity;
+       return product;
+     });
+    }).subscribe(res => this.getTotal(res));
+    //let total = 0;
+    //this.productPrice[index] = price;
+    //this.productPrice.forEach(p => {
+    //  total += p;
+    //});
+    //this.total = +total.toFixed(2);
+    //this.discount.valueChanges.subscribe(res => {
+    //  this.total = +(total * (1 - res / 100)).toFixed(2);
+    //});
   }
-  addProduct() {
-    const arr = <FormArray>this.invoiceForm.controls['product'];
-    arr.push(this.fb.group({
-      productId: null,
-      quantity: [0, [Validators.required]],
-      price: 0
-    }));
-    this.getProduct();
+  getTotal(products) {
+    this.total = 0;
+    products.forEach(product => {
+      this.total += +(product.price * product.quantity) * (1 - this.discount.value / 100);
+    });
   }
   delete(index) {
+    console.log(this.product.at(index).value.price);
     const arr = <FormArray>this.invoiceForm.controls['product'];
     arr.removeAt(index);
   }
@@ -136,16 +152,6 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
      return this.modalService.status$;
     }
     return true;
-  }
-  get product(): FormArray {
-    return this.invoiceForm.get('product') as FormArray;
-  }
-  get total() {
-    let total = 0;
-    this.product.controls.forEach(control => {
-      total += +(control.value.price * (1 - this.invoiceForm.get('discount').value / 100));
-    });
-    return +total.toFixed(2) || 0;
   }
   ngOnDestroy() {
     this.subscriber.unsubscribe();

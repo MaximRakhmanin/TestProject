@@ -10,6 +10,9 @@ export class ProductResolverService implements Resolve<Product[]> {
 
   constructor(private productService: ProductService) { }
   resolve(): Observable<Product[]> {
+    if (this.productService.products$){
+      return this.productService.products$;
+    }
     return this.productService.getProducts();
   }
 }

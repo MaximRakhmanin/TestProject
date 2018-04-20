@@ -31,6 +31,6 @@
   </div>
   <div class="total">
     <span class="total-z">TOTAL</span>
-    <span class="total-v">{{(invoice$ | async)?.total}}</span>
+    <span class="total-v">{{(invoice$ | async)?.total | number: '1.2-2'}}</span>
   </div>
 </div>

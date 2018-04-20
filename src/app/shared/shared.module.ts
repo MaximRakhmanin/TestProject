@@ -17,6 +17,6 @@ import { MatDialogModule } from '@angular/material';
         MatButtonModule,
         MatIconModule,
         MatDialogModule
-    ]
+    ],
 })
 export class SharedModule { }

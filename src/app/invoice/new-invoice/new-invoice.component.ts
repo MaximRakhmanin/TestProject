@@ -85,7 +85,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   getData() {
     this.customers$ = this.customerService.customers$;
-    this.products$ = this.productService.products$.shareReplay();
+    this.products$ = this.productService.products$;
   }
   setInvoice() {
     if (this.invoiceForm.valid) {
@@ -126,9 +126,9 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     });
   }
   delete(index) {
-    console.log(this.product.at(index).value.price);
     const arr = <FormArray>this.invoiceForm.controls['product'];
     arr.removeAt(index);
+    this.getPrice();
   }
   openDialog() {
       this.dialog.open(ModalComponent, {

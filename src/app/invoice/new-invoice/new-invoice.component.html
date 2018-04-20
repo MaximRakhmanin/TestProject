@@ -9,10 +9,10 @@
     </mat-form-field>
     <div fxLayout="row">
       <div fxFlex="90">
+        <div class="fix">
+          <div class="head">Product</div><div class="head">Quantity</div><div class="head">Price</div>
+        </div>
         <table cellpadding="15">
-          <tr>
-            <th>Products</th><th>Quantity</th><th>Price</th>
-          </tr>
           <div [formGroup]="invoiceForm">
           <ng-container formArrayName="product">
                 <tr *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
@@ -53,7 +53,7 @@
     </div>
     <div fxLayout="row">
       <div class="total" fxFlex="10">Total</div>
-      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total }}</div>
+      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total | number: '1.2-2' }}</div>
       <div fxFlex="10"><button mat-button (click)="setInvoice()" color="primary">Save</button></div>
     </div>
   </form>

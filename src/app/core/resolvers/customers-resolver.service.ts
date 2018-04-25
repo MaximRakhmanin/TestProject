@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { CustomerService } from '../services/customer.service';
 
 @Injectable()
-export class CustomerResolverService implements Resolve<Customer[]> {
+export class CustomersResolverService implements Resolve<Customer[]> {
 
   constructor(private customerService: CustomerService) { }
   resolve(): Observable<Customer[]> {

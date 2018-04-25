@@ -1,11 +1,10 @@
 <div class="container">
   <form [formGroup]="invoiceForm">
     <mat-form-field>
-      <div [formGroup]="invoiceForm">
         <mat-select formControlName="customer" placeholder="Select Name">
           <mat-option *ngFor="let customer of customers$ | async " [value]="customer.id">{{ customer.name}}</mat-option>
         </mat-select>
-      </div>
+      <mat-error *ngIf="customer?.invalid">Customer required</mat-error>
     </mat-form-field>
     <div fxLayout="row">
       <div fxFlex="90">
@@ -19,7 +18,7 @@
                   <app-create-product
                     [products]="products$ | async"
                     [product]="product"
-                    (total)="getPrice($event, i)"
+                    (total)="getPrice($event)"
                     (del)="delete(i)">
                   </app-create-product>
                </tr>
@@ -30,6 +29,7 @@
                       <mat-select formControlName="addproduct" placeholder="AddProduct">
                         <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
                       </mat-select>
+                      <mat-error *ngIf="product?.invalid">Min 1 product</mat-error>
                     </div>
                   </mat-form-field>
                 </td>
@@ -44,20 +44,16 @@
         <div fxLayoutAlign="center" class="disc">Discount</div>
         <div fxLayoutAlign="center">
           <mat-form-field>
-            <div [formGroup]="invoiceForm">
               <input matInput type="number" placeholder="%" formControlName="discount"  max="50" min="0">
-            </div>
+              <mat-error *ngIf="discount?.invalid">Max 50%</mat-error>
           </mat-form-field>
         </div>
       </div>
     </div>
     <div fxLayout="row">
       <div class="total" fxFlex="10">Total</div>
-      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total | number: '1.2-2' }}</div>
+      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total.value | number: '1.2-2' }}</div>
       <div fxFlex="10"><button mat-button (click)="setInvoice()" color="primary">Save</button></div>
     </div>
   </form>
-  <div *ngIf="success" class="success">
-    Invoice created
-  </div>
 </div>

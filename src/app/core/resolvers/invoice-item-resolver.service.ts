@@ -9,6 +9,9 @@ export class InvoiceItemResolverService implements Resolve<InvoiceItem[]> {
   constructor(private invoiceItemService: InvoiceItemService) { }
   resolve(route: ActivatedRouteSnapshot) {
     const id = route.paramMap.get('id');
+    if (this.invoiceItemService.items$) {
+      return this.invoiceItemService.items$;
+    }
    return this.invoiceItemService.getItem(id);
   }
 }

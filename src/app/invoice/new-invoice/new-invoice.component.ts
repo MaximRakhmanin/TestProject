@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { MatDialog } from '@angular/material';
@@ -9,16 +10,17 @@ import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/zip';
-import { ModalService } from '../../core/services/modal.service';
+import 'rxjs/add/observable/of';
+
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
+import { ModalService } from '../../core/services/modal.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
-import { ModalComponent } from '../../modal/modal.component';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/shareReplay';
+
+
 
 
 @Component({
@@ -32,9 +34,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   products$: Observable<Product[]>;
   product$: Observable<Product>;
   subscriber: Subscription;
-  productPrice = [];
-  total = 0;
-  success = false;
+  totalSubscription: Subscription;
   constructor(
     private fb: FormBuilder,
     private customerService: CustomerService,
@@ -42,7 +42,8 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     private invoiceService: InvoiceService,
     private invoiceItemService: InvoiceItemService,
     private dialog: MatDialog,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private router: Router,
     ) { }
   get prod() {
     return this.invoiceForm.get('addproduct');
@@ -52,6 +53,12 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   get discount() {
     return this.invoiceForm.get('discount');
+  }
+  get customer() {
+    return this.invoiceForm.get('customer');
+  }
+  get total() {
+    return this.invoiceForm.get('total');
   }
   ngOnInit() {
     this.validate();
@@ -64,16 +71,24 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       return products.find(product => product.id === productId);
     });
     this.subscriber = this.product$.subscribe(res => this.addProduct(res));
-    this.invoiceForm.get('discount').valueChanges.subscribe(res => {
-      this.getPrice();
-    });
+    this.totalSubscription = Observable.combineLatest(
+      //this.discount.valueChanges,
+      this.product.valueChanges,
+      this.products$)
+    .map(([items, products]: [any, Product[]]) => {
+      return items.map(item => {
+        item.product = products.find(product => product.id === item.product_id);
+        return item;
+      });
+    }).subscribe(res => this.getTotal(res));
   }
   validate() {
     this.invoiceForm = new FormGroup({
       customer: new FormControl('', [Validators.required]),
       product: new FormArray([]),
       discount: new FormControl('', [Validators.max(50)]),
-      addproduct: new FormControl('')
+      total: new FormControl(),
+      addproduct: new FormControl('',[Validators.required])
     });
   }
   addProduct(product) {
@@ -97,53 +112,24 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       };
      this.invoiceService.setInvoice(invoice)
       .subscribe(res => console.log(res));
-     this.success = true;
-     setTimeout(() => this.success = false, 4000);
+     this.router.navigate(['/invoice']);
     }
   }
-  getPrice() {
-    const items$ = Observable.of(this.product.value);
-    Observable.combineLatest(
-      items$,
-      this.products$)
-    .map(([items, products]: [any, Product[]]) => {
-      return items.map(item => {
-        const prod = products.find(product => product.id === item.product_id);
-        prod.quantity = item.quantity;
-        return prod;
-      });
-    }).map(products => {
-     return products.map(product => {
-       product.invoicePrice = product.price * product.quantity;
-       return product;
-     });
-    }).subscribe(res => this.getTotal(res));
-  }
-  getTotal(products) {
-    this.total = 0;
-    products.forEach(product => {
-      this.total += +(product.price * product.quantity) * (1 - this.discount.value / 100);
+  getTotal(items) {
+    let total = 0;
+    items.forEach(item => {
+      total += +(item.product.price * item.quantity) * (1 - this.discount.value / 100);
     });
+    this.total.setValue(total);
   }
   delete(index) {
     const arr = <FormArray>this.invoiceForm.controls['product'];
     arr.removeAt(index);
-    this.getPrice();
-  }
-  openDialog() {
-      this.dialog.open(ModalComponent, {
-        width: '300px',
-        data: {
-          title: 'Warning',
-          content: 'Are you sure you want to exit without saving?'
-        }
-      });
   }
 
   canDeactivate() {
     if (this.invoiceForm.touched) {
-     this.openDialog();
-     return this.modalService.status$;
+    return this.modalService.openModal('confirm', 'Are you sure you want to go out ??');
     }
     return true;
   }

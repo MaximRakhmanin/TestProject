@@ -1,90 +1,161 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CustomerService } from '../../core/services/customer.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+
 import { Observable } from 'rxjs/Observable';
-import { Customer } from '../../models/customer';
-import { Product } from '../../models/product';
-import { Invoice } from '../../models/invoice';
-import { InvoiceItemService } from '../../core/services/invoice-item.service';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProductService } from '../../core/services/product.service';
-import 'rxjs/add/operator/take';
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
+
+import { Product } from '../../models/product';
+import { Customer } from '../../models/customer';
+import { Invoice } from '../../models/invoice';
+import { InvoiceItem } from '../../models/invoice-item';
+import { CustomerService } from '../../core/services/customer.service';
 import { InvoiceService } from '../../core/services/invoice.service';
+import { InvoiceItemService } from '../../core/services/invoice-item.service';
+import { ProductService } from '../../core/services/product.service';
+import { FormArrayItem } from '../../models/FormArrayItem';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/startWith';
+
 
 @Component({
   selector: 'app-edit-mode',
   templateUrl: './edit-mode.component.html',
   styleUrls: ['./edit-mode.component.scss']
 })
-export class EditModeComponent implements OnInit {
+export class EditModeComponent implements OnInit, OnDestroy {
+  products$: Observable<Product[]>;
   customers$: Observable<Customer[]>;
-  products: Product[];
   invoice$: Observable<Invoice>;
-  productsItem$;
-  selectedProduct;
+  items$: Observable<InvoiceItem[]>;
+  invoice;
   editForm: FormGroup;
+  updateInvoiceItem: Subject<InvoiceItem> = new Subject<InvoiceItem>();
+  deleteInvoice = new Subject();
+  itemsSubscription: Subscription;
+  invoiceSubscription: Subscription;
+  productSubscription: Subscription;
+  customerSubscription: Subscription;
+  updateInvoiceItemSubscription: Subscription;
+  deleteInvoiceSubscription: Subscription;
+  totalSubscription: Subscription;
   constructor(
-    private customerService: CustomerService,
-    private invoiceItemService: InvoiceItemService,
-    private invoiceService: InvoiceService,
     private productService: ProductService,
-    private fb: FormBuilder
-  ) {
-  }
+    private customerService: CustomerService,
+    private invoiceService: InvoiceService,
+    private invoiceItemService: InvoiceItemService
+  ) {}
   ngOnInit() {
-    this.validator();
     this.getData();
-    this.getProduct();
-    this.addProduct();
-  }
-  getData() {
-    this.productService.products$.subscribe(res => this.products = res);
-    this.customers$ = this.customerService.customers$;
-    this.invoiceItemService.customer$.subscribe(res => this.editForm.controls['customer'].setValue(res.name));
-    this.invoice$ = this.invoiceService.invoice$;
-    this.productsItem$ = Observable.combineLatest(this.invoiceItemService.products$,
-      this.invoiceItemService.items$).map(([products, items]) => {
-      return products.map(product => {
-        product.item = items.find(item => {
-         return item.product_id === product.id; });
-        return product;
+    this.invoiceSubscription = this.invoice$.subscribe(res => this.invoice = res);
+    this.validate();
+    this.itemsSubscription = this.items$.subscribe(res => {
+      return res.forEach(item => {
+        this.items.push(new FormGroup({
+          product_id: new FormControl(item.product_id),
+          quantity: new FormControl(item.quantity),
+          id: new FormControl(item.id),
+        }));
       });
     });
-    this.productsItem$.subscribe(res => res.map(product => {
-      const p = <FormArray>this.editForm.controls['product'];
-      p.push(this.fb.group({
-        productId: product.id,
-        productName: product.name,
-        productQuantity: product.item.quantity,
-        productPrice: product.price
-      })); }
-      ));
+  this.productSubscription = this.product.valueChanges
+    .switchMap(prod_id => {
+      return this.invoiceItemService.setItem(this.invoice.id, { product_id: prod_id, quantity: 1});
+    })
+    .switchMap((res) => {
+      return this.invoiceService.update(this.invoice.id, { total: this.total.value })
+      .mapTo(res);
+    })
+    .subscribe((res: InvoiceItem) => this.addProduct(res));
+   this.customerSubscription = this.customer.valueChanges.switchMap((customer_id) => {
+     return this.invoiceService.update(this.invoice.id, { customer_id: customer_id });
+    }).subscribe(res => console.log(res));
+  this.updateInvoiceItemSubscription = this.updateInvoiceItem
+    .debounceTime(500)
+    .switchMap((item) => {
+    return  this.invoiceItemService.update(this.invoice.id, item.id,
+     { invoice_id: this.invoice.id, product_id: item.product_id, quantity: item.quantity });
+   })
+   .switchMap((invItem: InvoiceItem) => this.invoiceService.update(invItem.invoice_id, {total: this.total.value}))
+    .subscribe(res => console.log(res));
+  this.deleteInvoiceSubscription = this.deleteInvoice.switchMap((item: FormArrayItem) => {
+    return this.invoiceItemService.delete(this.invoice.id, item.id);
+  })
+  .switchMap(() => this.invoiceService.update(this.invoice.id, {total: this.total.value}))
+  .subscribe(res => console.log(res), err => console.log('error'));
+    this.totalSubscription = Observable.combineLatest(
+      this.items.valueChanges
+      .startWith(this.items.value),
+      this.products$)
+    .map(([items, products]: [any, Product[]]) => {
+      return items.map(item => {
+        item.product = products.find(product => product.id === item.product_id);
+        return item;
+      });
+    }).subscribe(res => this.getTotal(res));
   }
-  get product(): FormArray {
+  ngOnDestroy() {
+   this.itemsSubscription.unsubscribe();
+   this.invoiceSubscription.unsubscribe();
+   this.productSubscription.unsubscribe();
+   this.customerSubscription.unsubscribe();
+   this.updateInvoiceItemSubscription.unsubscribe();
+   this.deleteInvoiceSubscription.unsubscribe();
+   this.totalSubscription.unsubscribe();
+  }
+  get product() {
+    return this.editForm.get('addProduct');
+  }
+  get quantity() {
+    return this.editForm.get('quantity');
+  }
+  get items() {
     return this.editForm.get('product') as FormArray;
   }
-  validator() {
-    this.editForm = this.fb.group({
-      customer: '',
-      product: this.fb.array([]),
-      addProduct: '',
-      addquantity: [1, Validators.required],
-      addprice: ''
+  get customer() {
+   return  this.editForm.get('customer_id');
+  }
+  get total() {
+    return this.editForm.get('total');
+  }
+  getData() {
+    this.products$ = this.productService.products$;
+    this.customers$ = this.customerService.customers$;
+    this.invoice$ = this.invoiceService.invoice$;
+    this.items$ = this.invoiceItemService.items$;
+  }
+  addProduct(invoiceItem) {
+    this.items.push(new FormGroup({
+      product_id: new FormControl(invoiceItem.product_id),
+      quantity: new FormControl(invoiceItem.quantity),
+      id: new FormControl(invoiceItem.id),
+    }));
+  }
+  validate() {
+    this.editForm = new FormGroup({
+      customer_id: new FormControl(this.invoice.customer_id),
+      addProduct: new FormControl(''),
+      quantity: new FormControl(''),
+      product: new FormArray([]),
+      total: new FormControl(),
     });
   }
-  getProduct() {
-   console.log(this.product.controls);
-}
-  addProduct() {
-    this.editForm.get('addProduct').valueChanges.subscribe(res => {
-      const product = this.products.find(prod => prod.id === res);
-      const p = <FormArray>this.editForm.controls['product'];
-      p.push(this.fb.group({
-        productId: product.id,
-        productName: product.name,
-        productQuantity: this.editForm.get('addquantity').value,
-        productPrice: product.price
-      }));
+  delete(item, index) {
+    this.deleteInvoice.next(item.value);
+    this.items.removeAt(index);
+  }
+  getTotal(items) {
+    let total = 0;
+    items.forEach(item => {
+      total += +(item.product.price * item.quantity) * (1 - this.invoice.discount / 100);
     });
+    this.total.setValue(total);
+  }
+  save(item) {
+    this.updateInvoiceItem.next(item);
   }
 }

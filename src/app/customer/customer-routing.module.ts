@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {CustomerComponent} from './customer.component';
-import { CustomerResolverService } from '../core/resolvers/customer-resolver.service';
+import { CustomersResolverService } from '../core/resolvers/customers-resolver.service';
 
 const routes: Routes = [
-    { path: '', component: CustomerComponent, resolve: { data: CustomerResolverService } }
+    { path: '', component: CustomerComponent, resolve: { customers: CustomersResolverService } }
 ];
 
 @NgModule({

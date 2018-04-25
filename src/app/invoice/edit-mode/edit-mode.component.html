@@ -1,59 +1,53 @@
 <div class="container">
-  <h1 class="h">Invoice {{ (invoice$ | async)?.id }}</h1>
-  <form action="" [formGroup]="editForm">
-      <mat-form-field>
-        <mat-select formControlName="customer">
-            <mat-option *ngFor="let customer of customers$ | async" [value]="customer.name">
-              {{ customer.name }}
-            </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <form [formGroup]="editForm">
+    <mat-form-field>
+      <mat-select formControlName="customer_id" placeholder="Select Name">
+        <mat-option *ngFor="let customer of customers$ | async " [value]="customer.id">{{ customer.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
     <div fxLayout="row">
-      <div fxFlex="80">
-         <div class="table" fxLayout="row">
-           <div>product</div>
-           <div>quantity</div>
-           <div>price</div>
-         </div>
-        <div formArrayName="product">
-          <div *ngFor="let product of product.controls; let i=index" [formGroupName]="i">
-            <mat-form-field>
-              <mat-select [value]="product.value.productName" formControlName="productName">
-                <mat-option *ngFor="let product of products" [value]="product.name">
-                  {{ product.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-              <input matInput type="number" formControlName="productQuantity">
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-              <input matInput type="number" formControlName="productPrice" [value]="product.value.productPrice * product.value.productQuantity">
-            </mat-form-field>
-          </div>
+      <div fxFlex="90">
+        <div class="fix">
+          <div class="head">Product</div><div class="head">Quantity</div><div class="head">Price</div>
         </div>
-          <mat-form-field>
-            <mat-select formControlName="addProduct" placeholder="Add Product">
-              <mat-option *ngFor="let product of products" [value]="product.id">
-                {{ product.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="example-full-width">
-            <input matInput type="number" formControlName="addquantity">
-          </mat-form-field>
-        <mat-form-field class="example-full-width">
-          <input matInput type="number" formControlName="addprice" [value]="selectedProduct?.price * editForm.get('addquantity').value">
-        </mat-form-field>
+        <table cellpadding="15">
+          <div [formGroup]="editForm">
+            <ng-container formArrayName="product">
+              <tr *ngFor="let product of items.controls; let i=index" [formGroupName]="i">
+                <app-create-product
+                  [products]="products$ | async"
+                  [product]="product"
+                  (save)="save($event)"
+                  (del)="delete($event, i)">
+                </app-create-product>
+              </tr>
+              <tr>
+                <td>
+                  <mat-form-field>
+                    <div [formGroup]="editForm">
+                      <mat-select formControlName="addProduct" placeholder="AddProduct">
+                        <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
+                      </mat-select>
+                    </div>
+                  </mat-form-field>
+                </td>
+                <td *ngIf="product">
+                </td>
+              </tr>
+            </ng-container>
+          </div>
+        </table>
       </div>
-      <div fxFlex="20">
-        <span  fxLayoutAlign="center">Discount</span>
-        <span  fxLayoutAlign="center">{{ (invoice$ | async)?.discount }}%</span>
+      <div fxFlex="10">
+        <div fxLayoutAlign="center" class="disc">Discount</div>
+        <div fxLayoutAlign="center">
+          {{ invoice.discount }}
+        </div>
       </div>
     </div>
+    <div fxLayout="row">
+      <div class="total" fxFlex="10">Total</div>
+      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total.value | number: '1.2-2' }}</div>
+    </div>
   </form>
-  <div class="total">
-    <div>TOTAL</div>
-    <div></div>
-  </div>
 </div>

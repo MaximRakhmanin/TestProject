@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
-import { CreateProductComponent } from '../create-product/create-product.component';
+import { CreateProductModule } from '../create-product/create-product.module';
 
 @NgModule({
   imports: [
@@ -18,11 +18,11 @@ import { CreateProductComponent } from '../create-product/create-product.compone
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    CreateProductModule
   ],
   declarations: [
     NewInvoiceComponent,
-    CreateProductComponent
   ]
 })
 export class NewInvoiceModule { }

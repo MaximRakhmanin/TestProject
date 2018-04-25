@@ -10,9 +10,9 @@
       <input matInput type="number" placeholder="quantity" [formControl]="quantity" min="0">
   </mat-form-field>
 </td>
-<td *ngIf="selectedPrice">
-  {{ selectedPrice}}
-</td>
 <td>
   <button mat-button color="warn" (click)="delete()">Delete</button>
+</td>
+<td *ngIf="selectedPrice">
+  {{ selectedPrice}}
 </td>

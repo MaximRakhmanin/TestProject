@@ -7,6 +7,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { MatInputModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { CreateProductModule } from '../create-product/create-product.module';
 
 @NgModule({
   imports: [
@@ -16,9 +17,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
+    CreateProductModule
   ],
   declarations: [
-    EditModeComponent
+    EditModeComponent,
   ]
 })
 export class EditModeModule { }

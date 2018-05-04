@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {CustomerService} from '../core/services/customer.service';
-import {Customer} from '../models/customer';
-import { ActivatedRoute } from '@angular/router';
+
 import { Observable } from 'rxjs/Observable';
+
+import {Customer} from '../models/customer';
+
+import {CustomerService} from '../core/services/customer.service';
 
 @Component({
   selector: 'app-customer',
@@ -15,9 +17,6 @@ export class CustomerComponent implements OnInit {
   constructor(private customerService: CustomerService) { }
 
   ngOnInit() {
-    this.getCustomer();
-  }
-  getCustomer() {
     this.customers$ = this.customerService.customers$;
   }
 }

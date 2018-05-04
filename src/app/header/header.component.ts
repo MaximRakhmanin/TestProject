@@ -12,7 +12,6 @@ export class HeaderComponent implements OnInit {
   constructor(private is: InvoiceService) { }
 
   ngOnInit() {
-    this.is.getInvoices();
     this.countInvoice$ = this.is.invoices$.map(invoice => invoice.length);
   }
 

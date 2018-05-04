@@ -7,17 +7,17 @@
 
         <ng-container matColumnDef="product">
           <mat-header-cell *matHeaderCellDef> Product </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+          <mat-cell *matCellDef="let element"> {{element.product.name}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="quantity">
           <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.item.quantity}} </mat-cell>
+          <mat-cell *matCellDef="let element"> {{element.quantity}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="price">
           <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.price}} </mat-cell>
+          <mat-cell *matCellDef="let element"> {{element.product.price}} </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

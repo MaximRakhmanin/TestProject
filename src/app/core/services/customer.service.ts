@@ -1,7 +1,5 @@
-///<reference path="../../../../node_modules/rxjs/add/operator/catch.d.ts"/>
-///<reference path="../../../../node_modules/rxjs/add/observable/of.d.ts"/>
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/shareReplay';
@@ -9,22 +7,59 @@ import 'rxjs/add/operator/catch';
 
 import {Customer} from '../../models/customer';
 import 'rxjs/add/observable/of';
+import { StateManagement, StateRequests } from './state-management';
+import { ConnectableObservable } from 'rxjs/Rx';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/publishReplay';
+import { Action } from '../../models/action';
 
 
 @Injectable()
 export class CustomerService {
-  customers$: Observable<Customer[]>;
-  customer$: Observable<Customer>;
-  constructor(private http: HttpClient) { }
+  customers$: ConnectableObservable<Customer[]>;
+  customer$: ConnectableObservable<Customer>;
+  isData$: ConnectableObservable<boolean>;
+  stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
+  constructor(private http: HttpClient) {
+    
+    this.customers$ = Observable.
+    combineLatest(
+      this.stateManagement.entities$,
+      this.stateManagement.collectionIds$
+    )
+    .map(([entities, ids]) =>
+      ids.map(id => entities[id])
+    )
+    .publishReplay(1);
+    this.customers$.connect();
+    
+    this.customer$ = Observable.
+    combineLatest(
+      this.stateManagement.entityId$,
+      this.stateManagement.entities$
+    )
+    .map(([id, entities]) => {
+      return entities[id];
+    }).publishReplay(1);
+    this.customer$.connect();
+    
+    this.isData$ = this.stateManagement.responseData$
+    .scan((isData: boolean, {type}: Action) => {
+      if (type === StateRequests.GetList || type === StateRequests.Add || type === StateRequests.Remove) {
+        return true;
+      }
+    }, false)
+    .publishBehavior(false);
+    this.isData$.connect();
+  }
+  
   getCustomers(): Observable<Customer[]> {
-   return this.customers$ = this.http.get<Customer[]>('/customers')
-   .shareReplay(1)
-    .catch(err => {
-    return Observable.throw(err); });
+    this.stateManagement.getList$.next(this.http.get<Customer[]>('/customers'));
+    return this.customers$;
   }
   getCustomer(id): Observable<Customer> {
-   return this.customer$ = this.http.get<Customer>(`/customers/${id}`)
-   .shareReplay(1);
+    this.stateManagement.get$.next(this.http.get<Customer>(`/customers/${id}`));
+    return this.customer$;
   }
 
 }

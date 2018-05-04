@@ -10,9 +10,12 @@ export class CustomersResolverService implements Resolve<Customer[]> {
 
   constructor(private customerService: CustomerService) { }
   resolve(): Observable<Customer[]> {
-    if (this.customerService.customers$) {
-      return this.customerService.customers$;
-    }
-   return this.customerService.getCustomers();
+    const customer = this.customerService.isData$.switchMap(isData => {
+      if (isData) {
+        return this.customerService.customers$;
+      }
+      return this.customerService.getCustomers();
+    }).take(1);
+    return customer;
   }
 }

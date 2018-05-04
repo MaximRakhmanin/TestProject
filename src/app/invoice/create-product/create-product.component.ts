@@ -19,6 +19,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   @Output() save = new EventEmitter();
   selectedPrice: number;
   productSubscription: Subscription;
+  changeSubscription: Subscription;
   constructor() { }
   get prod() {
     return this.product.get('product_id') as FormControl;
@@ -34,12 +35,13 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     }).subscribe(res => {
       this.selectedPrice = +(res.price * this.quantity.value).toFixed(2);
     });
-    this.product.valueChanges.subscribe(res => this.save.emit(res));
+   this.changeSubscription = this.product.valueChanges.subscribe(res => this.save.emit(res));
   }
   delete() {
     this.del.emit(this.product);
   }
   ngOnDestroy() {
     this.productSubscription.unsubscribe();
+    this.changeSubscription.unsubscribe();
   }
 }

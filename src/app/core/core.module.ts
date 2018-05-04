@@ -13,11 +13,12 @@ import { InvoiceItemService } from './services/invoice-item.service';
 import { ModalService } from './services/modal.service';
 import { ProductResolverService } from './resolvers/product-resolver.service';
 import { InvoiceItemResolverService } from './resolvers/invoice-item-resolver.service';
-import { EditInvoiceResolverService } from './resolvers/edit-invoice-resolver.service';
 import { CanDeactivateGuard } from './guards/can-deactivate-invoice.guard';
 import { CustomersResolverService } from './resolvers/customers-resolver.service';
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
+import { HttpHandleErrorService } from './services/http-handle-error.service';
+import { StateManagement } from './services/state-management';
 
 @NgModule({
   imports: [
@@ -36,10 +37,11 @@ import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
         httpInterceptorProviders,
         InvoiceItemService,
         InvoiceItemResolverService,
-        EditInvoiceResolverService,
         CanDeactivateGuard,
         ModalService,
-        InvoiceResolverService
+        InvoiceResolverService,
+        HttpHandleErrorService,
+        StateManagement
     ],
 })
 export class CoreModule { }

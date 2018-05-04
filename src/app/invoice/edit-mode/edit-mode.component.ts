@@ -8,18 +8,21 @@ import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/do';
 
 import { Product } from '../../models/product';
 import { Customer } from '../../models/customer';
 import { Invoice } from '../../models/invoice';
 import { InvoiceItem } from '../../models/invoice-item';
+
 import { CustomerService } from '../../core/services/customer.service';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { ProductService } from '../../core/services/product.service';
 import { FormArrayItem } from '../../models/FormArrayItem';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/startWith';
 
 
 @Component({
@@ -43,54 +46,57 @@ export class EditModeComponent implements OnInit, OnDestroy {
   updateInvoiceItemSubscription: Subscription;
   deleteInvoiceSubscription: Subscription;
   totalSubscription: Subscription;
+
   constructor(
     private productService: ProductService,
     private customerService: CustomerService,
     private invoiceService: InvoiceService,
     private invoiceItemService: InvoiceItemService
   ) {}
+
   ngOnInit() {
     this.getData();
     this.invoiceSubscription = this.invoice$.subscribe(res => this.invoice = res);
     this.validate();
     this.itemsSubscription = this.items$.subscribe(res => {
-      return res.forEach(item => {
-        this.items.push(new FormGroup({
-          product_id: new FormControl(item.product_id),
-          quantity: new FormControl(item.quantity),
-          id: new FormControl(item.id),
-        }));
-      });
+      return res.forEach(item => this.addProduct(item));
     });
-  this.productSubscription = this.product.valueChanges
+    this.productSubscription = this.product.valueChanges
     .switchMap(prod_id => {
-      return this.invoiceItemService.setItem(this.invoice.id, { product_id: prod_id, quantity: 1});
+      return this.invoiceItemService.setItem(this.invoice.id, { product_id: prod_id, quantity: 1}).take(1);
     })
     .switchMap((res) => {
-      return this.invoiceService.update(this.invoice.id, { total: this.total.value })
+      return this.invoiceService.update(this.invoice.id, { total: this.total.value }).take(1)
       .mapTo(res);
     })
-    .subscribe((res: InvoiceItem) => this.addProduct(res));
-   this.customerSubscription = this.customer.valueChanges.switchMap((customer_id) => {
+    .map(item => this.addProduct(item))
+    .subscribe();
+
+    this.customerSubscription = this.customer.valueChanges.switchMap((customer_id) => {
      return this.invoiceService.update(this.invoice.id, { customer_id: customer_id });
-    }).subscribe(res => console.log(res));
-  this.updateInvoiceItemSubscription = this.updateInvoiceItem
-    .debounceTime(500)
+    }).subscribe();
+
+    this.updateInvoiceItemSubscription = this.updateInvoiceItem
+    .debounceTime(1000)
     .switchMap((item) => {
     return  this.invoiceItemService.update(this.invoice.id, item.id,
-     { invoice_id: this.invoice.id, product_id: item.product_id, quantity: item.quantity });
+     { invoice_id: this.invoice.id, product_id: item.product_id, quantity: item.quantity }).take(1);
    })
    .switchMap((invItem: InvoiceItem) => this.invoiceService.update(invItem.invoice_id, {total: this.total.value}))
-    .subscribe(res => console.log(res));
-  this.deleteInvoiceSubscription = this.deleteInvoice.switchMap((item: FormArrayItem) => {
+    .subscribe();
+
+  this.deleteInvoiceSubscription = this.deleteInvoice
+  .switchMap((item: FormArrayItem) => {
     return this.invoiceItemService.delete(this.invoice.id, item.id);
   })
   .switchMap(() => this.invoiceService.update(this.invoice.id, {total: this.total.value}))
-  .subscribe(res => console.log(res), err => console.log('error'));
-    this.totalSubscription = Observable.combineLatest(
+  .subscribe();
+    this.totalSubscription = Observable
+    .combineLatest(
       this.items.valueChanges
       .startWith(this.items.value),
-      this.products$)
+      this.products$
+    )
     .map(([items, products]: [any, Product[]]) => {
       return items.map(item => {
         item.product = products.find(product => product.id === item.product_id);
@@ -107,6 +113,7 @@ export class EditModeComponent implements OnInit, OnDestroy {
    this.deleteInvoiceSubscription.unsubscribe();
    this.totalSubscription.unsubscribe();
   }
+
   get product() {
     return this.editForm.get('addProduct');
   }
@@ -122,11 +129,12 @@ export class EditModeComponent implements OnInit, OnDestroy {
   get total() {
     return this.editForm.get('total');
   }
+
   getData() {
-    this.products$ = this.productService.products$;
+    this.items$ = this.invoiceItemService.collection$.take(1);
+    this.products$ = this.productService.collection$;
     this.customers$ = this.customerService.customers$;
     this.invoice$ = this.invoiceService.invoice$;
-    this.items$ = this.invoiceItemService.items$;
   }
   addProduct(invoiceItem) {
     this.items.push(new FormGroup({

@@ -48,15 +48,21 @@ export class InvoiceComponent implements OnInit, OnDestroy {
       .mapTo(id);
   })
     .mergeMap(id => this.invoiceService.delete(id))
-    .subscribe(res => console.log('deleteInvoice'), err => console.log('hhhhhhhh'));
+    .subscribe(res => console.log('deleteInvoice'));
   }
   ngOnDestroy() {
     this.subscriber.unsubscribe();
   }
   getInvoice() {
-    this.invoices$ = Observable.combineLatest(this.invoiceService.invoices$, this.customerService.customers$)
+    this.invoices$ = Observable.
+    combineLatest(
+      this.invoiceService.invoices$,
+      this.customerService.customers$
+    )
     .map(([invoices, customers]: [Invoice[], Customer[]]) => {
-      return invoices.map((invoice) => {
+      return invoices
+      .filter(invoice => invoice)
+      .map((invoice) => {
         invoice.customer = customers.find(customer => customer.id === invoice.customer_id);
         return invoice;
       });

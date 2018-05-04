@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { ProductService } from '../../core/services/product.service';
-import { Product } from '../../models/product';
 import { Customer } from '../../models/customer';
 import { Invoice } from '../../models/invoice';
 import { InvoiceItem } from '../../models/invoice-item';
@@ -20,7 +19,7 @@ import { CustomerService } from '../../core/services/customer.service';
   styleUrls: ['./view-mode.component.scss']
 })
 export class ViewModeComponent implements OnInit {
-  products$: Observable<Product[]>;
+  products$;
   customer$: Observable<Customer>;
   invoice$: Observable<Invoice>;
   items$: Observable<InvoiceItem[]>;
@@ -36,17 +35,18 @@ export class ViewModeComponent implements OnInit {
   }
   getListItems() {
     this.invoice$ = this.invoiceService.invoice$;
-    this.items$ = this.invoiceItemService.items$;
-
-    const products$ = this.items$
-    .switchMap(items => Observable.zip(...items.map(item => this.productService.getProduct(item.product_id))));
+    this.items$ = this.invoiceItemService.collection$;
+    this.products$ = this.productService.collection$;
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
 
-    this.products$ = Observable.combineLatest(products$,
-      this.invoiceItemService.items$).map(([products, items]) => {
-      return products.map(product => {
-        product.item = items.find(item => item.product_id === product.id);
-        return product;
+    this.products$ = Observable.combineLatest(
+      this.products$,
+      this.items$
+    )
+    .map(([products, items]: [any[], any[]]) => {
+      return items.map(item => {
+        item.product = products.find(product => product.id === item.product_id);
+        return item;
       });
     });
   }

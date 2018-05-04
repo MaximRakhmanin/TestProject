@@ -19,6 +19,9 @@ import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
+import 'rxjs/add/operator/startWith';
+import { Subject } from 'rxjs/Subject';
+import { Invoice } from '../../models/invoice';
 
 
 
@@ -33,8 +36,11 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
   product$: Observable<Product>;
-  subscriber: Subscription;
+  addProductSubscription: Subscription;
   totalSubscription: Subscription;
+  createInvoiceSubscription: Subscription;
+  addInvoice$ = new Subject();
+  
   constructor(
     private fb: FormBuilder,
     private customerService: CustomerService,
@@ -70,17 +76,22 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     .map(([products, productId]: [Product[], number]) => {
       return products.find(product => product.id === productId);
     });
-    this.subscriber = this.product$.subscribe(res => this.addProduct(res));
+    this.addProductSubscription = this.product$.subscribe(res => this.addProduct(res));
     this.totalSubscription = Observable.combineLatest(
-      //this.discount.valueChanges,
       this.product.valueChanges,
-      this.products$)
+      this.products$,
+      this.discount.valueChanges.startWith(this.discount.value),
+    )
     .map(([items, products]: [any, Product[]]) => {
       return items.map(item => {
         item.product = products.find(product => product.id === item.product_id);
         return item;
       });
     }).subscribe(res => this.getTotal(res));
+
+    this.createInvoiceSubscription = this.addInvoice$.switchMap((invoice) => {
+     return this.invoiceService.setInvoice(invoice);
+    }).subscribe();
   }
   validate() {
     this.invoiceForm = new FormGroup({
@@ -100,19 +111,17 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   getData() {
     this.customers$ = this.customerService.customers$;
-    this.products$ = this.productService.products$;
+    this.products$ = this.productService.collection$;
   }
   setInvoice() {
     if (this.invoiceForm.valid) {
-      const invoice = {
+      this.addInvoice$.next({
         items: this.invoiceForm.value.product,
         customer_id: this.invoiceForm.value.customer,
         discount: this.invoiceForm.value.discount || 0,
-        total: this.total
-      };
-     this.invoiceService.setInvoice(invoice)
-      .subscribe(res => console.log(res));
-     this.router.navigate(['/invoice']);
+        total: this.total.value
+      });
+      this.router.navigate(['/invoice']);
     }
   }
   getTotal(items) {
@@ -134,6 +143,8 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     return true;
   }
   ngOnDestroy() {
-    this.subscriber.unsubscribe();
+    this.addProductSubscription.unsubscribe();
+    this.totalSubscription.unsubscribe();
+    this.createInvoiceSubscription.unsubscribe();
   }
 }

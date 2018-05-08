@@ -1,26 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { EditModeRoutingModule } from './edit-mode-routing.module';
-import { EditModeComponent } from './edit-mode.component';
+import { InvoicesRoutingModule } from './invoices-routing.module';
+import { InvoicesComponent } from './invoices.component';
+import { CreateProductModule } from '../create-product/create-product.module';
 import { SharedModule } from '../../shared/shared.module';
-import { MatInputModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { CreateProductModule } from '../create-product/create-product.module';
+import { MatInputModule } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule,
-    EditModeRoutingModule,
+    InvoicesRoutingModule,
+    CreateProductModule,
     SharedModule,
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
-    CreateProductModule
   ],
   declarations: [
-    EditModeComponent,
+    InvoicesComponent
   ]
 })
-export class EditModeModule { }
+export class InvoicesModule { }

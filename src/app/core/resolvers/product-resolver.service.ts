@@ -18,11 +18,12 @@ export class ProductResolverService implements Resolve<Product[]> {
   resolve(): Observable<Product[]> {
     const product = this.productService.isData$.switchMap(isData => {
       if (isData) {
-        return this.productService.collection$;
+        return this.productService.products$;
       }
       return this.productService.getProducts();
     }).take(1);
 
     return product;
+   // return this.productService.getProducts().take(1);
   }
 }

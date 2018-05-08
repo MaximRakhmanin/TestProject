@@ -1,27 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 
+import { ConnectableObservable } from 'rxjs/Rx';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/catch';
-
-import {Customer} from '../../models/customer';
 import 'rxjs/add/observable/of';
-import { StateManagement, StateRequests } from './state-management';
-import { ConnectableObservable } from 'rxjs/Rx';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/publishReplay';
-import { Action } from '../../models/action';
 
+import {Customer} from '../../models/customer';
+
+import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 
 @Injectable()
 export class CustomerService {
-  customers$: ConnectableObservable<Customer[]>;
-  customer$: ConnectableObservable<Customer>;
+  customers$: Observable<Customer[]>;
+  customer$: Observable<Customer>;
   isData$: ConnectableObservable<boolean>;
   stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
   constructor(private http: HttpClient) {
-    
+
     this.customers$ = Observable.
     combineLatest(
       this.stateManagement.entities$,
@@ -29,10 +28,8 @@ export class CustomerService {
     )
     .map(([entities, ids]) =>
       ids.map(id => entities[id])
-    )
-    .publishReplay(1);
-    this.customers$.connect();
-    
+    );
+
     this.customer$ = Observable.
     combineLatest(
       this.stateManagement.entityId$,
@@ -40,11 +37,10 @@ export class CustomerService {
     )
     .map(([id, entities]) => {
       return entities[id];
-    }).publishReplay(1);
-    this.customer$.connect();
-    
+    });
+
     this.isData$ = this.stateManagement.responseData$
-    .scan((isData: boolean, {type}: Action) => {
+    .scan((isData: boolean, {type}) => {
       if (type === StateRequests.GetList || type === StateRequests.Add || type === StateRequests.Remove) {
         return true;
       }
@@ -52,7 +48,7 @@ export class CustomerService {
     .publishBehavior(false);
     this.isData$.connect();
   }
-  
+
   getCustomers(): Observable<Customer[]> {
     this.stateManagement.getList$.next(this.http.get<Customer[]>('/customers'));
     return this.customers$;

@@ -8,76 +8,74 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/publish';
 
-import { Action } from '../../models/action';
 import { InvoiceItem } from '../../models/invoice-item';
 
-import { StateManagement, StateRequests } from './state-management';
+import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 
 
 @Injectable()
 export class InvoiceItemService {
-  collection$: ConnectableObservable<InvoiceItem[]>;;
+  items$;
   stateManagement: StateManagement<InvoiceItem> = new StateManagement<InvoiceItem>();
   isData$: ConnectableObservable<boolean>;
-  updateItem$: ConnectableObservable<InvoiceItem>;
-  addItem$: ConnectableObservable<InvoiceItem>;
-  deleteItem$: ConnectableObservable<InvoiceItem>;
+  updateItem$: Observable<InvoiceItem>;
+  addItem$: Observable<InvoiceItem>;
+  deleteItem$: Observable<InvoiceItem>;
   constructor(private http: HttpClient) {
-    this.isData$ = this.stateManagement.responseData$.scan((isData: boolean, {type}: Action) => {
-      if (+type === StateRequests.GetList || +type === StateRequests.Add || +type === StateRequests.Remove) {
+    this.isData$ = this.stateManagement.responseData$.scan((isData: boolean, {type}) => {
+      if (type === StateRequests.GetList || type === StateRequests.Add || type === StateRequests.Remove) {
         return true;
       }
     }, false).publishBehavior(false);
     this.isData$.connect();
-    this.collection$ = Observable.
-    combineLatest(
+
+    this.items$ = Observable.combineLatest(
       this.stateManagement.entities$,
-      this.stateManagement.collectionIds$
+      this.stateManagement.collectionIds$,
     )
     .map(([entities, ids]) => {
-      return ids.map(id => entities[id]);
-    }).publishReplay(1);
-    this.collection$.connect();
+      return ids.filter(id => entities[id]).map(id => entities[id]);
+    })
+    .shareReplay(1);
 
     this.updateItem$ = Observable.
     combineLatest(
-      this.stateManagement.updateId$,
+      this.stateManagement.updateEntityId$,
       this.stateManagement.entities$
     )
+    .debounceTime(10)
     .map(([id, entities]) => {
       return entities[id];
-    }).publishReplay(1);
-    this.updateItem$.connect();
+    });
 
     this.addItem$ = Observable.
     combineLatest(
       this.stateManagement.entities$,
       this.stateManagement.addEntityId$
-    )
-    .map(([entity, id]) => entity[id]).publishReplay(1);
-    this.addItem$.connect();
+    ).
+    debounceTime(10)
+    .map(([entity, id]) => entity[id]);
 
     this.deleteItem$ = this.stateManagement.responseData$
     .filter(response => response.type === StateRequests.Remove)
-    .map(res => res.value[0])
-    .publishReplay(1);
-    this.deleteItem$.connect();
+    .map(res => res.value[0]);
   }
   getItem(id): Observable<InvoiceItem[]> {
     this.stateManagement.getList$.next(this.http.get<InvoiceItem[]>(`/invoices/${id}/items`));
-    return this.collection$;
+    return this.items$;
   }
-  setItem(id, item) {
-    this.stateManagement.add$.next(this.http.post<InvoiceItem>(`/invoices/${id}/items`, item));
+  create(item) {
+    this.stateManagement.add$.next(this.http.post<InvoiceItem>(`/invoices/${item.invoice_id}/items`, item));
     return this.addItem$;
   }
-  update(invoice_id, item_id, item) {
-    this.stateManagement.update$.next(this.http.put<InvoiceItem>(`/invoices/${invoice_id}/items/${item_id}`, item));
+  update(item) {
+    this.stateManagement.update$.next(this.http.put<InvoiceItem>(`/invoices/${item.invoice_id}/items/${item.id}`, item));
     return this.updateItem$;
   }
-  delete(invoice_id, id) {
-    this.stateManagement.remove$.next(this.http.delete<InvoiceItem>(`/invoices/${invoice_id}/items/${id}`));
-    return this.deleteItem$;
+  delete(item) {
+    this.stateManagement.remove$.next(this.http.delete(`/invoices/${item.invoice_id}/items/${item.id}`).mapTo(item));
+    return this.stateManagement.removeResponse$;
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+
 import { MatDialog } from '@angular/material';
 import { ModalComponent } from '../../modal/modal.component';
 

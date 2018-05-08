@@ -1,0 +1,65 @@
+<div class="container">
+  <form [formGroup]="form">
+      <mat-form-field>
+        <mat-select formControlName="customer_id" placeholder="Select Name">
+          <mat-option *ngFor="let customer of customers$ | async " [value]="customer.id">{{ customer.name}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="customerId.invalid">
+          <span *ngIf="customerId.hasError('required')">Customer is required</span>
+        </mat-error>
+      </mat-form-field>
+    <div fxLayout="row" class="content">
+      <div fxFlex="90">
+        <div class="fix" fxLayout="row">
+          <div class="product" fxFlex="33">Product</div>
+          <div class="quantity" fxFlex="33">Quantity</div>
+          <div class="price" fxFlex="33">Price</div>
+        </div>
+        <table cellpadding="15">
+            <ng-container formArrayName="items">
+              <tr *ngFor="let itemGroup of items.controls; let i=index" [formGroupName]="i">
+                <app-create-product
+                  [isEdit]="isEdit"
+                  [products]="products$ | async"
+                  [itemGroup]="itemGroup"
+                  (remove)="deleteItem(i)">
+                </app-create-product>
+              </tr>
+              <tr>
+                <td>
+                  <mat-form-field>
+                      <mat-select [formControl]="newItem" placeholder="AddProduct">
+                        <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="newItem.invalid && !items.length">
+                        <span *ngIf="newItem.hasError('required')">Product is required</span>
+                      </mat-error>
+                  </mat-form-field>
+                </td>
+              </tr>
+            </ng-container>
+        </table>
+      </div>
+      <div fxFlex="10">
+        <div fxLayoutAlign="center" class="disc">Discount</div>
+        <div fxLayoutAlign="center">
+          <div *ngIf="isEdit" style="font-size: 30px">{{ discount.value }}</div>
+          <div *ngIf="!isEdit">
+            <mat-form-field>
+              <input matInput type="number" placeholder="discount" [formControl]="discount" max="50" min="0">
+              <mat-error *ngIf="discount.invalid">
+                <span *ngIf="discount.hasError('min')">Min discount 0%</span>
+                <span *ngIf="discount.hasError('max')">Max discount 50%</span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div class="total" fxFlex="10">Total</div>
+      <div fxFlex="10" class="disc-c" fxLayoutAlign="center">{{ total.value | number: '1.2-2' }}</div>
+      <div *ngIf="!isEdit"><button mat-raised-button color="primary" (click)="save()" #seved>Save</button></div>
+    </div>
+  </form>
+</div>

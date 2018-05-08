@@ -1,18 +1,22 @@
 <td>
   <mat-form-field>
-      <mat-select [formControl]="prod" placeholder="AddProduct">
+      <mat-select [formControl]="productId" placeholder="AddProduct">
         <mat-option *ngFor="let product of products" [value]="product.id">{{ product.name}}</mat-option>
       </mat-select>
   </mat-form-field>
 </td>
 <td>
   <mat-form-field>
-      <input matInput type="number" placeholder="quantity" [formControl]="quantity" min="0">
+      <input matInput type="number" placeholder="quantity" [formControl]="quantity" min="1">
+    <mat-error *ngIf="quantity.invalid">
+      <span *ngIf="quantity.hasError('min')">Min quantity 1</span>
+      <span *ngIf="quantity.hasError('required')">Quantity is required</span>
+    </mat-error>
   </mat-form-field>
 </td>
 <td>
   <button mat-button color="warn" (click)="delete()">Delete</button>
 </td>
-<td *ngIf="selectedPrice">
-  {{ selectedPrice}}
+<td *ngIf="price">
+  {{ price.value }}
 </td>

@@ -15,12 +15,9 @@ import {InvoiceService} from '../core/services/invoice.service';
 import { CustomerService } from '../core/services/customer.service';
 
 import { Invoice } from '../models/invoice';
-import { Customer } from '../models/customer';
 
 import { MatDialog } from '@angular/material';
 import { ModalService } from '../core/services/modal.service';
-
-
 
 
 @Component({
@@ -32,7 +29,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   invoices$: Observable<Invoice[]>;
   displayedColumns = ['id', 'customer_name', 'discount', 'total', 'actions'];
   subscriber: Subscription;
-  deleteInvoice: Subject<any> = new Subject<any>();
+  deleteInvoice: Subject<number> = new Subject<number>();
   constructor(
     private invoiceService: InvoiceService,
     private customerService: CustomerService,
@@ -40,7 +37,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
   ) {}
   ngOnInit() {
-    this.getInvoice();
+    this.invoices$ = this.invoiceService.invoices$;
     this.subscriber = this.deleteInvoice
     .switchMap(id => {
       return this.modalService.openModal('delete', 'Are you sure you want to delete ??')
@@ -52,21 +49,6 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.subscriber.unsubscribe();
-  }
-  getInvoice() {
-    this.invoices$ = Observable.
-    combineLatest(
-      this.invoiceService.invoices$,
-      this.customerService.customers$
-    )
-    .map(([invoices, customers]: [Invoice[], Customer[]]) => {
-      return invoices
-      .filter(invoice => invoice)
-      .map((invoice) => {
-        invoice.customer = customers.find(customer => customer.id === invoice.customer_id);
-        return invoice;
-      });
-    });
   }
   delInvoice(id) {
     this.deleteInvoice.next(id);

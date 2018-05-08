@@ -8,7 +8,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from '../shared/shared.module';
-import { CreateProductComponent } from './create-product/create-product.component';
 
 @NgModule({
   imports: [
@@ -21,7 +20,7 @@ import { CreateProductComponent } from './create-product/create-product.componen
     SharedModule
   ],
   declarations: [
-      InvoiceComponent,
+      InvoiceComponent
   ]
 })
 export class InvoiceModule { }

@@ -1,11 +1,17 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import {FormControl} from '@angular/forms';
 
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/delay';
-import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/last';
+
+import { InvoiceItem } from '../../models/invoice-item';
+
+import { InvoiceItemService } from '../../core/services/invoice-item.service';
 
 @Component({
   selector: 'app-create-product',
@@ -13,35 +19,87 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./create-product.component.scss']
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
+  delete$: Subject<InvoiceItem>;
+  price$: Observable<number>;
+
+  subscriptions: {
+    setPrice?: Subscription;
+    updateItem?: Subscription;
+    deleteItem?: Subscription;
+  } = {};
+
   @Input() products;
-  @Input() product;
-  @Output() del = new EventEmitter();
-  @Output() save = new EventEmitter();
-  selectedPrice: number;
-  productSubscription: Subscription;
-  changeSubscription: Subscription;
-  constructor() { }
-  get prod() {
-    return this.product.get('product_id') as FormControl;
+  @Input() itemGroup;
+  @Input() isEdit;
+
+  @Output() total = new EventEmitter();
+  @Output() remove = new EventEmitter();
+
+  constructor(
+    private invoiceItemService: InvoiceItemService
+  ) {
   }
+
+  get productId() {
+    return this.itemGroup.get('product_id');
+  }
+
   get quantity() {
-    return this.product.get('quantity') as FormControl;
+    return this.itemGroup.get('quantity');
   }
+
+  get price() {
+    return this.itemGroup.get('price');
+  }
+
   ngOnInit() {
-    this.productSubscription = this.product.valueChanges
-    .startWith(this.product.value)
-    .map((controls: any) => {
-      return this.products.find(product => product.id === controls.product_id);
-    }).subscribe(res => {
-      this.selectedPrice = +(res.price * this.quantity.value).toFixed(2);
+    this.delete$ = new Subject<InvoiceItem>();
+
+    this.price$ = Observable.merge(
+      this.productId.valueChanges.startWith(this.productId.value),
+      this.quantity.valueChanges.startWith(this.quantity.value),
+    )
+    .map(() => this.products.find(product => product.id === this.productId.value))
+    .map((product) => +(product.price * this.quantity.value).toFixed(2));
+
+    this.subscriptions.setPrice = this.price$
+    .subscribe(price => {
+      this.price.setValue(price);
     });
-   this.changeSubscription = this.product.valueChanges.subscribe(res => this.save.emit(res));
+
+    // delete item
+    this.subscriptions.deleteItem = this.delete$
+    .switchMap((invoiceItem: InvoiceItem) => {
+      if (this.isEdit) {
+        return this.invoiceItemService.delete(invoiceItem).take(1);
+      }
+      return Observable.of(invoiceItem);
+    })
+    .subscribe(() => this.remove.emit());
+
+    // update invoice
+    this.subscriptions.updateItem = Observable.merge(
+      this.productId.valueChanges,
+      this.quantity.valueChanges,
+    )
+    .filter(() => this.isEdit)
+    .filter(() => this.quantity.value > 0)
+    .debounceTime(500)
+    .distinctUntilChanged()
+    .switchMap(() => {
+      return this.invoiceItemService.update(this.itemGroup.value);
+    })
+    .publish()
+    .connect();
   }
-  delete() {
-    this.del.emit(this.product);
-  }
+
   ngOnDestroy() {
-    this.productSubscription.unsubscribe();
-    this.changeSubscription.unsubscribe();
+    this.subscriptions.setPrice.unsubscribe();
+    this.subscriptions.updateItem.unsubscribe();
+    this.subscriptions.deleteItem.unsubscribe();
+  }
+
+  delete() {
+    this.delete$.next(this.itemGroup.value);
   }
 }

@@ -11,8 +11,8 @@ const routes: Routes = [
     resolve: {invoices: InvoicesResolverService, customers: CustomersResolverService},
   },
   {path: 'view/:id', loadChildren: 'app/invoice/view-mode/view-mode.module#ViewModeModule'},
-  {path: 'edit/:id', loadChildren: 'app/invoice/edit-mode/edit-mode.module#EditModeModule'},
-  {path: 'new', loadChildren: 'app/invoice/new-invoice/new-invoice.module#NewInvoiceModule'}
+  {path: 'edit/:id', loadChildren: 'app/invoice/invoices/invoices.module#InvoicesModule', data: { type: 'edit' } },
+  {path: 'create', loadChildren: 'app/invoice/invoices/invoices.module#InvoicesModule', data: { type: 'create' } },
 ];
 
 @NgModule({

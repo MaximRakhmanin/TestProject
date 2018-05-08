@@ -1,24 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {InvoiceService} from './services/invoice.service';
 import { HttpClientModule} from '@angular/common/http';
-import {CustomerService} from './services/customer.service';
-import {ProductService} from './services/product.service';
 import { httpInterceptorProviders } from './interceptors';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import { InvoiceItemService } from './services/invoice-item.service';
-
+import {InvoiceService} from './services/invoice.service';
+import {ProductService} from './services/product.service';
+import {CustomerService} from './services/customer.service';
 import { ModalService } from './services/modal.service';
 import { ProductResolverService } from './resolvers/product-resolver.service';
 import { InvoiceItemResolverService } from './resolvers/invoice-item-resolver.service';
-import { CanDeactivateGuard } from './guards/can-deactivate-invoice.guard';
 import { CustomersResolverService } from './resolvers/customers-resolver.service';
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpHandleErrorService } from './services/http-handle-error.service';
-import { StateManagement } from './services/state-management';
+
+import { CanDeactivateGuard } from './guards/can-deactivate-invoice.guard';
 
 @NgModule({
   imports: [
@@ -41,7 +40,6 @@ import { StateManagement } from './services/state-management';
         ModalService,
         InvoiceResolverService,
         HttpHandleErrorService,
-        StateManagement
     ],
 })
 export class CoreModule { }

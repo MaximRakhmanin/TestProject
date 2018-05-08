@@ -34,7 +34,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   constructor(private productService: ProductService) { }
 
   ngOnInit() {
-    this.products$ = this.productService.collection$;
+    this.products$ = this.productService.products$;
 
     this.requestProduct$ = this.addProduct$
     .switchMap(() => this.productService.setProduct()).shareReplay(1);

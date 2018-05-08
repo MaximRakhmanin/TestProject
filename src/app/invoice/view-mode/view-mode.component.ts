@@ -32,11 +32,13 @@ export class ViewModeComponent implements OnInit {
   }
   ngOnInit() {
     this.getListItems();
+    this.items$.subscribe(console.log);
+    this.customer$.subscribe(console.log);
   }
   getListItems() {
     this.invoice$ = this.invoiceService.invoice$;
-    this.items$ = this.invoiceItemService.collection$;
-    this.products$ = this.productService.collection$;
+    this.items$ = this.invoiceItemService.items$;
+    this.products$ = this.productService.products$;
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
 
     this.products$ = Observable.combineLatest(

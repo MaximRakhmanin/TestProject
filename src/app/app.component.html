@@ -1,2 +1,5 @@
 <app-header></app-header>
+<div *ngIf="spinner | async" class="spinner">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
 <router-outlet></router-outlet>

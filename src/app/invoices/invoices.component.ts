@@ -21,9 +21,9 @@ import { ModalService } from '../core/services/modal.service';
 
 
 @Component({
-  selector: 'app-invoice',
-  templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.scss']
+  selector: 'app-invoices',
+  templateUrl: './invoices.component.html',
+  styleUrls: ['./invoices.component.scss']
 })
 export class InvoiceComponent implements OnInit, OnDestroy {
   invoices$: Observable<Invoice[]>;

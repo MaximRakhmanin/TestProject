@@ -7,6 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
     exports: [
@@ -17,7 +18,8 @@ import { MatDialogModule } from '@angular/material';
         MatTableModule,
         MatButtonModule,
         MatIconModule,
-        MatDialogModule
+        MatDialogModule,
+        MatProgressSpinnerModule,
     ],
 })
 export class SharedModule { }

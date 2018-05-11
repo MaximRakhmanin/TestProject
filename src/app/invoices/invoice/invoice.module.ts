@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { InvoicesRoutingModule } from './invoices-routing.module';
-import { InvoicesComponent } from './invoices.component';
-import { CreateProductModule } from '../create-product/create-product.module';
+import { InvoicesRoutingModule } from './invoice-routing.module';
+import { InvoicesComponent } from './invoice.component';
+import { CreateProductModule } from '../invoiceItem/invoiceItem.module';
 import { SharedModule } from '../../shared/shared.module';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';

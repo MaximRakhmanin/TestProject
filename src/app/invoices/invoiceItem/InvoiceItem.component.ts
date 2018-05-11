@@ -15,8 +15,8 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
 
 @Component({
   selector: 'app-create-product',
-  templateUrl: './create-product.component.html',
-  styleUrls: ['./create-product.component.scss']
+  templateUrl: './invoiceItem.component.html',
+  styleUrls: ['./invoiceItem.component.scss']
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
   delete$: Subject<InvoiceItem>;

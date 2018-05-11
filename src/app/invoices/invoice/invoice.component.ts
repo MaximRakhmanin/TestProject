@@ -23,7 +23,7 @@ import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/mapTo';
-import 'rxjs/add/operator/publishLast';
+import 'rxjs/add/observable/merge';
 
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
@@ -34,15 +34,11 @@ import { InvoiceService } from '../../core/services/invoice.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
 import { ConnectableObservable } from 'rxjs/Rx';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/last';
-import 'rxjs/add/operator/throttle';
-import 'rxjs/add/operator/throttleTime';
 
 @Component({
-  selector: 'app-invoices',
-  templateUrl: './invoices.component.html',
-  styleUrls: ['./invoices.component.scss']
+  selector: 'app-invoice',
+  templateUrl: './invoice.component.html',
+  styleUrls: ['./invoice.component.scss']
 })
 export class InvoicesComponent implements OnInit, OnDestroy {
   saveForm$: Subject<any>;
@@ -58,7 +54,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     modal?: Subscription;
   } = {};
   checkModal$ = new Subject<any>();
-  out$: ConnectableObservable<boolean>;
+  outModal$: ConnectableObservable<boolean>;
   isSuccessFullResponse$;
   requestInvoice$;
 
@@ -121,7 +117,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       return Observable.of({product_id});
     })
     .subscribe(data => {
-      this.addProduct(data);
+      this.items.push(this.addItem(data));
       this.newItem.reset(null, {emitEvent: false});
     });
 
@@ -158,8 +154,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.requestInvoice$ = this.saveForm$
     .switchMap(value => {
       return this.invoiceService.setInvoice(this.form.value);
-    }).publishReplay(1);
-    this.requestInvoice$.connect();
+    }).shareReplay(1);
 
     this.subscriptions.addedInvoice = this.requestInvoice$
     .subscribe(res => {
@@ -170,22 +165,20 @@ export class InvoicesComponent implements OnInit, OnDestroy {
    .mapTo(true)
    .startWith(false);
 
-   this.out$ = Observable
+   this.outModal$ = Observable
    .merge(
      this.isSuccessFullResponse$,
      this.checkModal$
    )
     .switchMap((isSuccessFullResponse) => {
-      if (isSuccessFullResponse || this.isEdit) {
-        return Observable.of(true);
-      } else if ((this.form.touched || this.items.value.length)) {
+      if ((this.form.touched || this.items.value.length) && !(isSuccessFullResponse || this.isEdit)) {
           return this.modal.openModal('Warning', 'Are you sure that you want to leave without having survived?');
         }
         return Observable.of(true);
     })
     .delay(10)
     .publish();
-   this.out$.connect();
+   this.outModal$.connect();
   }
 
   ngOnDestroy() {
@@ -208,15 +201,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     });
     if (this.isEdit) {
       this.form.reset(this.route.snapshot.data.invoice);
-      this.route.snapshot.data.invoiceItems.forEach(item => {
-        this.addProduct(item);
-      });
+      const formGroups = this.route.snapshot.data.invoiceItems.map(item => this.addItem(item));
+      const formArray = new FormArray(formGroups);
+      this.form.setControl('items', formArray);
     }
   }
 
-  addProduct(item) {
-    this.items.push(
-      new FormGroup({
+  addItem(item) {
+     return new FormGroup({
         id: new FormControl(item.id || null),
         invoice_id: new FormControl(item.invoice_id || null),
         product_id: new FormControl(item.product_id, [Validators.required]),
@@ -225,8 +217,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
           Validators.min(1)
         ]),
         price: new FormControl(0),
-      })
-    );
+      });
   }
 
   deleteItem(index) {
@@ -242,6 +233,6 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   }
   canDeactivate() {
    this.checkModal$.next();
-   return this.out$.take(1);
+   return this.outModal$.take(1);
   }
 }

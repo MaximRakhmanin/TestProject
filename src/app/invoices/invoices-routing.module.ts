@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {InvoiceComponent} from './invoice.component';
+import {InvoiceComponent} from './invoices.component';
 import { CustomersResolverService } from '../core/resolvers/customers-resolver.service';
 import { InvoicesResolverService } from '../core/resolvers/invoices-resolver.service';
 
@@ -10,9 +10,9 @@ const routes: Routes = [
     component: InvoiceComponent,
     resolve: {invoices: InvoicesResolverService, customers: CustomersResolverService},
   },
-  {path: 'view/:id', loadChildren: 'app/invoice/view-mode/view-mode.module#ViewModeModule'},
-  {path: 'edit/:id', loadChildren: 'app/invoice/invoices/invoices.module#InvoicesModule', data: { type: 'edit' } },
-  {path: 'create', loadChildren: 'app/invoice/invoices/invoices.module#InvoicesModule', data: { type: 'create' } },
+  {path: 'view/:id', loadChildren: 'app/invoices/view-mode/view-mode.module#ViewModeModule'},
+  {path: 'edit/:id', loadChildren: 'app/invoices/invoice/invoice.module#InvoicesModule', data: { type: 'edit' } },
+  {path: 'create', loadChildren: 'app/invoices/invoice/invoice.module#InvoicesModule', data: { type: 'create' } },
 ];
 
 @NgModule({

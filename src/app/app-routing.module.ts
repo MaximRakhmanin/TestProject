@@ -10,7 +10,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'invoice', pathMatch: 'full'},
       {path: 'product', loadChildren: 'app/product/product.module#ProductModule'},
       {path: 'customer', loadChildren: 'app/customer/customer.module#CustomerModule'},
-      {path: 'invoice', loadChildren: 'app/invoice/invoice.module#InvoiceModule'},
+      {path: 'invoice', loadChildren: 'app/invoices/invoices.module#InvoiceModule'},
       {path: '**', loadChildren: 'app/page-not-found/page-not-found.module#PageNotFoundModule'}
     ],
 }

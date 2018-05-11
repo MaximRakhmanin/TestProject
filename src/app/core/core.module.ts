@@ -18,6 +18,8 @@ import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpHandleErrorService } from './services/http-handle-error.service';
 
 import { CanDeactivateGuard } from './guards/can-deactivate-invoice.guard';
+import { SpinnerService } from './services/spinner.service';
+import { CollectionsService } from './services/collections.service';
 
 @NgModule({
   imports: [
@@ -40,6 +42,8 @@ import { CanDeactivateGuard } from './guards/can-deactivate-invoice.guard';
         ModalService,
         InvoiceResolverService,
         HttpHandleErrorService,
+        SpinnerService,
+        CollectionsService
     ],
 })
 export class CoreModule { }

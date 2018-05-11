@@ -1,4 +1,3 @@
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +13,17 @@ import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/skip';
+import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/mergeAll';
+import 'rxjs/add/operator/publish';
+import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/publishReplay';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/mapTo';
+import 'rxjs/add/operator/publishLast';
 
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
@@ -24,6 +33,11 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
+import { ConnectableObservable } from 'rxjs/Rx';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/last';
+import 'rxjs/add/operator/throttle';
+import 'rxjs/add/operator/throttleTime';
 
 @Component({
   selector: 'app-invoices',
@@ -31,7 +45,6 @@ import { ProductService } from '../../core/services/product.service';
   styleUrls: ['./invoices.component.scss']
 })
 export class InvoicesComponent implements OnInit, OnDestroy {
-  out = false;
   saveForm$: Subject<any>;
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
@@ -42,7 +55,12 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     setTotalPrice?: Subscription;
     addedInvoice?: Subscription;
     updateInvoice?: Subscription;
+    modal?: Subscription;
   } = {};
+  checkModal$ = new Subject<any>();
+  out$: ConnectableObservable<boolean>;
+  isSuccessFullResponse$;
+  requestInvoice$;
 
   constructor(
     private customerService: CustomerService,
@@ -89,7 +107,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.customers$ = this.customerService.customers$;
     this.products$ = this.productService.products$;
 
-    // create new item
+    // создание продукта
     this.subscriptions.createItem = this.newItem.valueChanges
     .switchMap((product_id) => {
       if (this.isEdit) {
@@ -107,7 +125,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.newItem.reset(null, {emitEvent: false});
     });
 
-    // set total price
+    // подсчет total
     this.subscriptions.setTotalPrice = Observable.combineLatest(
       this.items.valueChanges.startWith(this.items.value),
       this.discount.valueChanges.startWith(this.discount.value),
@@ -137,13 +155,37 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     });
 
     // create invoice
-    this.subscriptions.addedInvoice = this.saveForm$
+    this.requestInvoice$ = this.saveForm$
     .switchMap(value => {
       return this.invoiceService.setInvoice(this.form.value);
-    })
+    }).publishReplay(1);
+    this.requestInvoice$.connect();
+
+    this.subscriptions.addedInvoice = this.requestInvoice$
     .subscribe(res => {
       this.router.navigate(['/', 'invoice']);
     });
+
+   this.isSuccessFullResponse$ = this.requestInvoice$
+   .mapTo(true)
+   .startWith(false);
+
+   this.out$ = Observable
+   .merge(
+     this.isSuccessFullResponse$,
+     this.checkModal$
+   )
+    .switchMap((isSuccessFullResponse) => {
+      if (isSuccessFullResponse || this.isEdit) {
+        return Observable.of(true);
+      } else if ((this.form.touched || this.items.value.length)) {
+          return this.modal.openModal('Warning', 'Are you sure that you want to leave without having survived?');
+        }
+        return Observable.of(true);
+    })
+    .delay(10)
+    .publish();
+   this.out$.connect();
   }
 
   ngOnDestroy() {
@@ -195,16 +237,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this.out = true;
+    this.checkModal$.complete();
     this.saveForm$.next(this.form.value);
   }
   canDeactivate() {
-    if (this.isEdit) {
-      return true;
-    }
-    if ((this.form.touched  || this.items.value.length) && !this.out ) {
-      return this.modal.openModal('Warning', 'Are you sure that you want to leave without having survived?');
-    }
-    return true;
+   this.checkModal$.next();
+   return this.out$.take(1);
   }
 }

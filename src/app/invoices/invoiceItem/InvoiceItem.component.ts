@@ -60,7 +60,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       this.quantity.valueChanges.startWith(this.quantity.value),
     )
     .map(() => this.products.find(product => product.id === this.productId.value))
-    .map((product) => +(product.price * this.quantity.value).toFixed(2));
+    .map((product) => +(product.price * this.quantity.value));
 
     this.subscriptions.setPrice = this.price$
     .subscribe(price => {

@@ -30,7 +30,10 @@ export class ProductService {
   deleteProduct$: Observable<Product>;
   newProduct = {name: 'NewProduct2', price: 35 } as Product;
   stateManagement: StateManagement<Product> = new StateManagement<Product>();
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    ) {
+
     this.isData$ = this.stateManagement.responseData$
     .scan((isData: boolean, {type}) => {
       if (type === StateRequests.GetList || type === StateRequests.Add || type === StateRequests.Remove) {
@@ -38,7 +41,7 @@ export class ProductService {
       }
     }, false)
     .publishBehavior(false);
-   this.isData$.connect();
+    this.isData$.connect();
 
     this.products$ = Observable.combineLatest(
       this.stateManagement.entities$,

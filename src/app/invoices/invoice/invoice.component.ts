@@ -33,14 +33,15 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
-import { ConnectableObservable } from 'rxjs/Rx';
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
+import { Invoice } from '../../models/invoice';
 
 @Component({
   selector: 'app-invoice',
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.scss']
 })
-export class InvoicesComponent implements OnInit, OnDestroy {
+export class InvoiceComponent implements OnInit, OnDestroy {
   saveForm$: Subject<any>;
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
@@ -55,8 +56,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   } = {};
   checkModal$ = new Subject<any>();
   outModal$: ConnectableObservable<boolean>;
-  isSuccessFullResponse$;
-  requestInvoice$;
+  isSuccessFullResponse$: Observable<boolean>;
+  requestInvoice$: Observable<Invoice>;
 
   constructor(
     private customerService: CustomerService,

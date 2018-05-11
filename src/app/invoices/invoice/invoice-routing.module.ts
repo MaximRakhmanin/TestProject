@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { InvoicesComponent } from './invoice.component';
 import { CustomersResolverService } from '../../core/resolvers/customers-resolver.service';
 import { InvoiceResolverService } from '../../core/resolvers/invoice-resolver.service';
 import { InvoiceItemResolverService } from '../../core/resolvers/invoice-item-resolver.service';
 import { ProductResolverService } from '../../core/resolvers/product-resolver.service';
 import { CanDeactivateGuard } from '../../core/guards/can-deactivate-invoice.guard';
+import { InvoiceComponent } from './invoice.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: InvoicesComponent,
+    component: InvoiceComponent,
     resolve:
       {
         invoiceItems: InvoiceItemResolverService,

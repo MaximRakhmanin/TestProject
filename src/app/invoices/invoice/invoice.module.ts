@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { InvoicesRoutingModule } from './invoice-routing.module';
-import { InvoicesComponent } from './invoice.component';
+import { InvoiceComponent } from './invoice.component';
 import { CreateProductModule } from '../invoiceItem/invoiceItem.module';
 import { SharedModule } from '../../shared/shared.module';
 import { MatSelectModule } from '@angular/material/select';
@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material';
     MatInputModule,
   ],
   declarations: [
-    InvoicesComponent
+    InvoiceComponent
   ]
 })
 export class InvoicesModule { }

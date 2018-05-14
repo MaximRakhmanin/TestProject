@@ -7,7 +7,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
-import { InvoiceItemModule } from '../invoiceItem/invoiceItem.module';
+import { InvoiceItemModule } from '../invoice-item/invoiceItem.module';
+
 
 @NgModule({
   imports: [

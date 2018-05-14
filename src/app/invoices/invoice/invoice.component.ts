@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
@@ -24,6 +25,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/startWith';
 
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
@@ -33,9 +35,7 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Invoice } from '../../models/invoice';
-import 'rxjs/add/operator/startWith';
 
 @Component({
   selector: 'app-invoice',

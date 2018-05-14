@@ -18,7 +18,7 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
   templateUrl: './invoiceItem.component.html',
   styleUrls: ['./invoiceItem.component.scss']
 })
-export class CreateProductComponent implements OnInit, OnDestroy {
+export class InvoiceItemComponent implements OnInit, OnDestroy {
   delete$: Subject<InvoiceItem>;
   price$: Observable<number>;
 

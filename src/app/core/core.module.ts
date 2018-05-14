@@ -15,7 +15,6 @@ import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.
 import { CustomersResolverService } from './resolvers/customers-resolver.service';
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
-import { HttpHandleErrorService } from './services/http-handle-error.service';
 
 import { SpinnerService } from './services/spinner.service';
 import { InvoiceGuard } from './guards/invoice.guard';
@@ -40,7 +39,6 @@ import { InvoiceGuard } from './guards/invoice.guard';
         InvoiceGuard,
         ModalService,
         InvoiceResolverService,
-        HttpHandleErrorService,
         SpinnerService,
     ],
 })

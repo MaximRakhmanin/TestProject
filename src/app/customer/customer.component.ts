@@ -12,9 +12,14 @@ import {CustomerService} from '../core/services/customer.service';
   styleUrls: ['./customer.component.scss']
 })
 export class CustomerComponent implements OnInit {
+
   customers$: Observable<Customer[]>;
+
   displayedColumns = ['name', 'address', 'phone'];
-  constructor(private customerService: CustomerService) { }
+
+  constructor(
+    private customerService: CustomerService
+  ) { }
 
   ngOnInit() {
     this.customers$ = this.customerService.customers$;

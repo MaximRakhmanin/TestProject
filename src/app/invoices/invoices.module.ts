@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SharedModule } from '../shared/shared.module';
-import { InvoiceListComponent } from './invoice-list/invoice-list.component';
+
 import { InvoicesComponent } from './invoices.component';
 
 @NgModule({

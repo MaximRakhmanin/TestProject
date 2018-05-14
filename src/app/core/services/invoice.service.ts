@@ -23,13 +23,18 @@ const httpOptions = {
 
 @Injectable()
 export class InvoiceService {
+  
   invoices$: Observable<Invoice[]>;
   invoice$: Observable<Invoice>;
+  
   addInvoice$: Observable<Invoice>;
   deleteInvoice$: Observable<Invoice>;
   updateInvoice$: Observable<Invoice>;
+  
   isData$: ConnectableObservable<boolean>;
+  
   stateManagement: StateManagement<Invoice> = new StateManagement<Invoice>();
+  
   constructor(
     private http: HttpClient,
     private customerService: CustomerService,

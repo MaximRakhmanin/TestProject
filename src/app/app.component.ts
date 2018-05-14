@@ -8,8 +8,13 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
   spinner: Observable<boolean>;
-  constructor(private spinnerService: SpinnerService) {}
+
+  constructor(
+    private spinnerService: SpinnerService
+  ) {}
+
   ngOnInit() {
     this.spinner = this.spinnerService.status$;
   }

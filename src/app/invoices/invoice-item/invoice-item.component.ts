@@ -14,15 +14,16 @@ import { InvoiceItem } from '../../models/invoice-item';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 
 @Component({
-  selector: 'app-create-product',
-  templateUrl: './invoiceItem.component.html',
-  styleUrls: ['./invoiceItem.component.scss']
+  selector: 'app-invoice-item',
+  templateUrl: './invoice-item.component.html',
+  styleUrls: ['./invoice-item.component.scss']
 })
 export class InvoiceItemComponent implements OnInit, OnDestroy {
+
   delete$: Subject<InvoiceItem>;
   price$: Observable<number>;
 
-  subscriptions: {
+  private subscriptions: {
     setPrice?: Subscription;
     updateItem?: Subscription;
     deleteItem?: Subscription;

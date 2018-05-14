@@ -18,12 +18,12 @@
         <table cellpadding="15">
             <ng-container formArrayName="items">
               <tr *ngFor="let itemGroup of items.controls; let i=index" [formGroupName]="i">
-                <app-create-product
+                <app-invoice-item
                   [isEdit]="isEdit"
                   [products]="products$ | async"
                   [itemGroup]="itemGroup"
                   (remove)="deleteItem(i)">
-                </app-create-product>
+                </app-invoice-item>
               </tr>
               <tr>
                 <td>

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-
 import { Resolve } from '@angular/router';
-import { Invoice } from '../../models/invoice';
-import { Observable } from 'rxjs/Observable';
-import { InvoiceService } from '../services/invoice.service';
+
 import 'rxjs/add/operator/take';
+import { Observable } from 'rxjs/Observable';
+
+import { Invoice } from '../../models/invoice';
+import { InvoiceService } from '../services/invoice.service';
 
 @Injectable()
 export class InvoicesResolverService implements Resolve<Invoice[]> {

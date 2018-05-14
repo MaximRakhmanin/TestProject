@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { InvoiceItemService } from '../services/invoice-item.service';
-import { InvoiceItem } from '../../models/invoice-item';
+
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMapTo';
+
+import { InvoiceItem } from '../../models/invoice-item';
+import { InvoiceItemService } from '../services/invoice-item.service';
 
 @Injectable()
 export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | boolean> {
 
-  constructor(private invoiceItemService: InvoiceItemService) { }
+  constructor(
+    private invoiceItemService: InvoiceItemService
+  ) { }
 
   resolve(route: ActivatedRouteSnapshot) {
     const id = route.paramMap.get('id');

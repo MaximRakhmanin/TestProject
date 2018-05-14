@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { InvoiceService } from '../core/services/invoice.service';
+
 import 'rxjs/add/operator/map';
+
+import { InvoiceService } from '../core/services/invoice.service';
 
 @Component({
   selector: 'app-header',
@@ -8,8 +10,12 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
   countInvoice$;
-  constructor(private invoiceService: InvoiceService) { }
+
+  constructor(
+    private invoiceService: InvoiceService
+  ) { }
 
   ngOnInit() {
     this.countInvoice$ = this.invoiceService.invoices$.map(invoice => invoice.length);

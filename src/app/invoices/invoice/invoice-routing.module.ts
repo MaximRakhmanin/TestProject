@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { CustomersResolverService } from '../../core/resolvers/customers-resolver.service';
 import { InvoiceResolverService } from '../../core/resolvers/invoice-resolver.service';
 import { InvoiceItemsResolverService } from '../../core/resolvers/invoice-items-resolver.service';

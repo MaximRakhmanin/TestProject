@@ -15,11 +15,13 @@ import { StateManagement, StateRequests } from '../../shared/utils/state-managem
 
 @Injectable()
 export class CustomerService {
+
   customers$: Observable<Customer[]>;
   customer$: Observable<Customer>;
   isData$: ConnectableObservable<boolean>;
   stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
-  constructor(private http: HttpClient) {
+
+  constructor( private http: HttpClient ) {
 
     this.customers$ = Observable.
     combineLatest(

@@ -43,21 +43,24 @@ import { Invoice } from '../../models/invoice';
   styleUrls: ['./invoice.component.scss']
 })
 export class InvoiceComponent implements OnInit, OnDestroy {
+
   saveForm$: Subject<any>;
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
   form: FormGroup;
   addItemFormControl = new FormControl('', [Validators.required]);
-  subscriptions: {
+
+  onCanDeactivate$ = new Subject<any>();
+  permissionLeavePage$: ConnectableObservable<boolean>;
+  isSuccessFullResponse$: Observable<boolean>;
+  requestInvoice$: Observable<Invoice>;
+
+  private subscriptions: {
     createItem?: Subscription;
     setTotalPrice?: Subscription;
     addedInvoice?: Subscription;
     updateInvoice?: Subscription;
   } = {};
-  onCanDeactivate$ = new Subject<any>();
-  permissionLeavePage$: ConnectableObservable<boolean>;
-  isSuccessFullResponse$: Observable<boolean>;
-  requestInvoice$: Observable<Invoice>;
 
   constructor(
     private customerService: CustomerService,

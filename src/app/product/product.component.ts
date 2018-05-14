@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import {ProductService} from '../core/services/product.service';
-import {Product} from '../models/product';
-
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/map';
@@ -15,15 +12,20 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/debounceTime';
 
+import {Product} from '../models/product';
+import {ProductService} from '../core/services/product.service';
 
 @Component({
-  selector: 'app-product',
-  templateUrl: './product.component.html',
+selector: 'app-product',
+templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
+
   products$: Observable<Product[]>;
+
   displayedColumns = ['id', 'name', 'price'];
+
   productDisplay$;
 
   constructor(private productService: ProductService) { }

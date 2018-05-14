@@ -1,14 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { Invoice } from '../../models/invoice';
-import { InvoiceService } from '../services/invoice.service';
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
+
+import { InvoiceService } from '../services/invoice.service';
+
+import { Invoice } from '../../models/invoice';
 
 @Injectable()
 export class InvoiceResolverService implements Resolve<Invoice | boolean> {
 
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(
+    private invoiceService: InvoiceService
+  ) { }
+
   resolve(route: ActivatedRouteSnapshot): Observable<Invoice> | boolean {
     const id = route.paramMap.get('id');
     if (id) {

@@ -62,18 +62,22 @@ export class InvoiceItemService {
     .filter(response => response.type === StateRequests.Remove)
     .map(res => res.value[0]);
   }
+  
   getItem(id): Observable<InvoiceItem[]> {
     this.stateManagement.getList$.next(this.http.get<InvoiceItem[]>(`/invoices/${id}/items`));
     return this.items$;
   }
+  
   create(item) {
     this.stateManagement.add$.next(this.http.post<InvoiceItem>(`/invoices/${item.invoice_id}/items`, item));
     return this.addItem$;
   }
+  
   update(item) {
     this.stateManagement.update$.next(this.http.put<InvoiceItem>(`/invoices/${item.invoice_id}/items/${item.id}`, item));
     return this.updateItem$;
   }
+  
   delete(item) {
     this.stateManagement.remove$.next(this.http.delete(`/invoices/${item.invoice_id}/items/${item.id}`).mapTo(item));
     return this.stateManagement.removeResponse$;

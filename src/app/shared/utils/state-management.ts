@@ -34,21 +34,21 @@ export class StateManagement<T> {
   removeResponse$: Observable<T>;
   getResponse$: Observable<T>;
   getListResponse$: Observable<T[]>;
-  
+
   entities$: Observable<{ [index: number]: T }>;
   collectionIds$: Observable<number[]>;
   entityId$: Observable<number>;
   addEntityId$: Observable<number>;
   updateEntityId$: Observable<number>;
-  
+
   constructor() {
-  
+
     this.addResponse$ = this.add$.mergeAll().share();
     this.updateResponse$ = this.update$.mergeAll().share();
     this.removeResponse$ = this.remove$.mergeAll().share();
     this.getResponse$ = this.get$.mergeAll().share();
     this.getListResponse$ = this.getList$.mergeAll().share();
-    
+
     this.responseDataRequests$ = Observable.merge(
       this.addResponse$.map((value) => ({type: StateRequests.Add, value: [value]})),
       this.updateResponse$.map((value) => ({type: StateRequests.Update, value: [value]})),
@@ -57,12 +57,12 @@ export class StateManagement<T> {
       this.getListResponse$.map((value) => ({type: StateRequests.GetList, value: value})),
     )
     .share();
-  
+
     this.responseData$ = this.responseDataRequests$
     .publishReplay(1);
     this.responseData$.connect();
-    
-    
+
+
     this.entities$ = this.responseData$
     .scan((acc, data: { type: StateRequests, value: any[] }) => {
       switch (data.type) {
@@ -87,8 +87,8 @@ export class StateManagement<T> {
         }
       }
     }, {});
-    
-    
+
+
     this.collectionIds$ = this.responseData$
     .map(({type, value}: { type: StateRequests, value: T[] }) => {
       const ids = value.map((entity: any) => entity.id);
@@ -113,12 +113,12 @@ export class StateManagement<T> {
         }
       }
     }, []);
-    
+
     this.entityId$ = this.responseDataRequests$.let(this.getId(StateRequests.Get));
     this.addEntityId$ = this.responseDataRequests$.let(this.getId(StateRequests.Add));
     this.updateEntityId$ = this.responseDataRequests$.let(this.getId(StateRequests.Update));
   }
-  
+
   getId(requestType) {
     return (observable) => {
       return observable

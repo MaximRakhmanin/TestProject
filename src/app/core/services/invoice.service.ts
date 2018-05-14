@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';

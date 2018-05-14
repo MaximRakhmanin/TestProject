@@ -10,15 +10,15 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
     exports: [
-        CommonModule,
-        FlexLayoutModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatTableModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogModule,
-        MatProgressSpinnerModule,
+      CommonModule,
+      FlexLayoutModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatTableModule,
+      MatButtonModule,
+      MatIconModule,
+      MatDialogModule,
+      MatProgressSpinnerModule,
     ],
 })
 export class SharedModule { }

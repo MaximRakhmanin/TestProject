@@ -12,8 +12,8 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/debounceTime';
 
-import {Product} from '../models/product';
-import {ProductService} from '../core/services/product.service';
+import { Product } from '../models/product';
+import { ProductService } from '../core/services/product.service';
 
 @Component({
 selector: 'app-product',
@@ -25,8 +25,6 @@ export class ProductComponent implements OnInit {
   products$: Observable<Product[]>;
 
   displayedColumns = ['id', 'name', 'price'];
-
-  productDisplay$;
 
   constructor(
     private productService: ProductService

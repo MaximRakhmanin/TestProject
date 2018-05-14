@@ -3,8 +3,8 @@ import { MatInputModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-import {CustomerComponent} from './customer.component';
-import {SharedModule} from '../shared/shared.module';
+import { CustomerComponent } from './customer.component';
+import { SharedModule } from '../shared/shared.module';
 import { CustomerRoutingModule } from './customer-routing.module';
 
 @NgModule({

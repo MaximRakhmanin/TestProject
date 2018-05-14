@@ -15,7 +15,7 @@ export class CustomersResolverService implements Resolve<Customer[]> {
   ) { }
 
   resolve(): Observable<Customer[]> {
-    const customer$ = this.customerService.isData$
+    return this.customerService.isData$
     .switchMap(isData => {
       if (isData) {
         return this.customerService.customers$;
@@ -23,6 +23,5 @@ export class CustomersResolverService implements Resolve<Customer[]> {
       return this.customerService.getCustomers();
     })
     .take(1);
-    return customer$;
   }
 }

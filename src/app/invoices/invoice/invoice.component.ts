@@ -29,13 +29,13 @@ import 'rxjs/add/operator/startWith';
 
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
+import { Invoice } from '../../models/invoice';
 
 import { ModalService } from '../../core/services/modal.service';
 import { InvoiceItemService } from '../../core/services/invoice-item.service';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
-import { Invoice } from '../../models/invoice';
 
 @Component({
   selector: 'app-invoice',
@@ -225,11 +225,10 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    if (this.form.invalid) {
-      return;
+    if (this.form.valid) {
+      this.onCanDeactivate$.complete();
+      this.saveForm$.next(this.form.value);
     }
-    this.onCanDeactivate$.complete();
-    this.saveForm$.next(this.form.value);
   }
 
   canLeave() {

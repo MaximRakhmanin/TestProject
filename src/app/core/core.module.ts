@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {BrowserModule} from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule} from '@angular/common/http';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { httpInterceptorProviders } from './interceptors';
 import { InvoiceItemService } from './services/invoice-item.service';
-import {InvoiceService} from './services/invoice.service';
-import {ProductService} from './services/product.service';
-import {CustomerService} from './services/customer.service';
+import { InvoiceService } from './services/invoice.service';
+import { ProductService } from './services/product.service';
+import { CustomerService } from './services/customer.service';
 import { ModalService } from './services/modal.service';
 import { SpinnerService } from './services/spinner.service';
 import { ProductsResolverService } from './resolvers/products-resolver.service';

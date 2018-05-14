@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/publishReplay';
 
-import {Customer} from '../../models/customer';
+import { Customer } from '../../models/customer';
 
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 
@@ -21,7 +21,9 @@ export class CustomerService {
   isData$: ConnectableObservable<boolean>;
   stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
 
-  constructor( private http: HttpClient ) {
+  constructor(
+    private http: HttpClient
+  ) {
 
     this.customers$ = Observable.
     combineLatest(

@@ -11,7 +11,7 @@ import {ProductService} from './services/product.service';
 import {CustomerService} from './services/customer.service';
 import { ModalService } from './services/modal.service';
 import { ProductsResolverService } from './resolvers/products-resolver.service';
-import { InvoiceItemResolverService } from './resolvers/invoice-item-resolver.service';
+import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.service';
 import { CustomersResolverService } from './resolvers/customers-resolver.service';
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
@@ -36,7 +36,7 @@ import { InvoiceGuard } from './guards/invoice.guard';
         InvoicesResolverService,
         httpInterceptorProviders,
         InvoiceItemService,
-        InvoiceItemResolverService,
+        InvoiceItemsResolverService,
         InvoiceGuard,
         ModalService,
         InvoiceResolverService,

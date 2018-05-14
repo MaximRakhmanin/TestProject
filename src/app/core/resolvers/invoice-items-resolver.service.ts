@@ -6,7 +6,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMapTo';
 
 @Injectable()
-export class InvoiceItemResolverService implements Resolve<InvoiceItem[] | boolean> {
+export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | boolean> {
 
   constructor(private invoiceItemService: InvoiceItemService) { }
 

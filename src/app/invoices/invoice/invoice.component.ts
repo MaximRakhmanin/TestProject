@@ -232,7 +232,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     this.saveForm$.next(this.form.value);
   }
 
-  canDeactivate() {
+  canLeave() {
    this.onCanDeactivate$.next();
    return this.permissionLeavePage$.take(1);
   }

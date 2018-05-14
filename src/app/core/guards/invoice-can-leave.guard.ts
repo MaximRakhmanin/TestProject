@@ -4,9 +4,9 @@ import { CanDeactivate } from '@angular/router';
 import { InvoiceComponent } from '../../invoices/invoice/invoice.component';
 
 @Injectable()
-export class InvoiceGuard implements CanDeactivate <InvoiceComponent> {
+export class InvoiceCanLeaveGuard implements CanDeactivate <InvoiceComponent> {
 
   canDeactivate(component: InvoiceComponent) {
-    return component.canDeactivate ? component.canDeactivate() : true;
+    return component.canLeave ? component.canLeave() : true;
   }
 }

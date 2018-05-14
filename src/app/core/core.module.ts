@@ -17,7 +17,8 @@ import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 
 import { SpinnerService } from './services/spinner.service';
-import { InvoiceGuard } from './guards/invoice.guard';
+import { InvoiceCanLeaveGuard } from './guards/invoice-can-leave.guard';
+
 
 @NgModule({
   imports: [
@@ -36,7 +37,7 @@ import { InvoiceGuard } from './guards/invoice.guard';
         httpInterceptorProviders,
         InvoiceItemService,
         InvoiceItemsResolverService,
-        InvoiceGuard,
+        InvoiceCanLeaveGuard,
         ModalService,
         InvoiceResolverService,
         SpinnerService,

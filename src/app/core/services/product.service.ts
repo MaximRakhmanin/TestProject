@@ -28,7 +28,6 @@ export class ProductService {
   addProduct$: Observable<Product>;
   isData$: ConnectableObservable<boolean>;
   deleteProduct$: Observable<Product>;
-  newProduct = {name: 'NewProduct2', price: 35 } as Product;
   stateManagement: StateManagement<Product> = new StateManagement<Product>();
   constructor(
     private http: HttpClient,
@@ -66,10 +65,7 @@ export class ProductService {
     this.stateManagement.getList$.next(this.http.get<Product[]>('/products'));
     return this.products$;
   }
-  setProduct(): Observable<Product> {
-   this.stateManagement.add$.next(this.http.post<Product>('/products', this.newProduct));
-   return this.addProduct$;
-  }
+
   delete(id): Observable<Product> {
     this.stateManagement.remove$.next(this.http.delete<Product>(`/products/${id}`));
     return this.deleteProduct$;

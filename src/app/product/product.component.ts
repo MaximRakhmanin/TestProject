@@ -1,11 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import {ProductService} from '../core/services/product.service';
 import {Product} from '../models/product';
 
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/combineLatest';
@@ -23,40 +21,15 @@ import 'rxjs/add/operator/debounceTime';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss']
 })
-export class ProductComponent implements OnInit, OnDestroy {
+export class ProductComponent implements OnInit {
   products$: Observable<Product[]>;
-  displayedColumns = ['id', 'name', 'price', 'delete'];
+  displayedColumns = ['id', 'name', 'price'];
   productDisplay$;
-  addProduct$ = new Subject();
-  deleteProduct$ = new Subject();
-  deleteProductSubscription: Subscription;
-  requestProduct$;
+
   constructor(private productService: ProductService) { }
 
   ngOnInit() {
     this.products$ = this.productService.products$;
-
-    this.requestProduct$ = this.addProduct$
-    .switchMap(() => this.productService.setProduct())
-    .shareReplay(1);
-    this.requestProduct$.subscribe();
-
-    this.productDisplay$ = Observable.merge(
-      this.requestProduct$,
-      this.requestProduct$
-      .debounceTime(2000)
-      .mapTo(null)
-    );
-    this.deleteProductSubscription = this.deleteProduct$.switchMap(id => this.productService.delete(id)).subscribe();
-  }
-  ngOnDestroy() {
-    this.deleteProductSubscription.unsubscribe();
-  }
-  addProduct() {
-    this.addProduct$.next(null);
-  }
-  delete(id) {
-    this.deleteProduct$.next(id);
   }
 
 }

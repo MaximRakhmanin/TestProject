@@ -1,15 +1,15 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 
-import { CanDeactivateInvoiceGuard } from './can-deactivate-invoice.guard';
+import { InvoiceGuard } from './invoice.guard';
 
 describe('CanDeactivateInvoiceGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CanDeactivateInvoiceGuard]
+      providers: [InvoiceGuard]
     });
   });
 
-  it('should ...', inject([CanDeactivateInvoiceGuard], (guard: CanDeactivateInvoiceGuard) => {
+  it('should ...', inject([InvoiceGuard], (guard: InvoiceGuard) => {
     expect(guard).toBeTruthy();
   }));
 });

@@ -9,10 +9,10 @@ import 'rxjs/add/operator/map';
 })
 export class HeaderComponent implements OnInit {
   countInvoice$;
-  constructor(private is: InvoiceService) { }
+  constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit() {
-    this.countInvoice$ = this.is.invoices$.map(invoice => invoice.length);
+    this.countInvoice$ = this.invoiceService.invoices$.map(invoice => invoice.length);
   }
 
 }

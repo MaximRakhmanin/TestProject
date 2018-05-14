@@ -12,7 +12,6 @@ const routes: Routes = [
     children: [
       { path: '', loadChildren: 'app/invoices/invoice-list/invoice-list.module#InvoiceListModule'},
       { path: 'create', loadChildren: 'app/invoices/invoice/invoice.module#InvoicesModule', data: { type: 'create' } },
-      { path: 'view/:id', loadChildren: 'app/invoices/view-mode/view-mode.module#ViewModeModule'},
       { path: 'edit/:id', loadChildren: 'app/invoices/invoice/invoice.module#InvoicesModule', data: { type: 'edit' } },
     ]
   },

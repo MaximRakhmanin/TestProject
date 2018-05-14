@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {ProductComponent} from './product.component';
-import { ProductResolverService } from '../core/resolvers/product-resolver.service';
+import { ProductsResolverService } from '../core/resolvers/products-resolver.service';
 
 const routes: Routes = [
-    { path: '', component: ProductComponent, resolve: {product: ProductResolverService} }
+    { path: '', component: ProductComponent, resolve: {product: ProductsResolverService} }
 ];
 
 @NgModule({

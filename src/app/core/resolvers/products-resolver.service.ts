@@ -9,7 +9,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMap';
 
 @Injectable()
-export class ProductResolverService implements Resolve<Product[]> {
+export class ProductsResolverService implements Resolve<Product[]> {
 
   constructor(
     private productService: ProductService

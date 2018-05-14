@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CustomersResolverService } from '../../core/resolvers/customers-resolver.service';
 import { InvoiceResolverService } from '../../core/resolvers/invoice-resolver.service';
 import { InvoiceItemResolverService } from '../../core/resolvers/invoice-item-resolver.service';
-import { ProductResolverService } from '../../core/resolvers/product-resolver.service';
+import { ProductsResolverService } from '../../core/resolvers/products-resolver.service';
 import { InvoiceComponent } from './invoice.component';
 import { InvoiceGuard } from '../../core/guards/invoice.guard';
 
@@ -15,7 +15,7 @@ const routes: Routes = [
       {
         invoiceItems: InvoiceItemResolverService,
         invoice: InvoiceResolverService,
-        products: ProductResolverService,
+        products: ProductsResolverService,
         customers: CustomersResolverService
       },
     canDeactivate: [InvoiceGuard],

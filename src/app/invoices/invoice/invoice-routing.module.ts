@@ -4,8 +4,8 @@ import { CustomersResolverService } from '../../core/resolvers/customers-resolve
 import { InvoiceResolverService } from '../../core/resolvers/invoice-resolver.service';
 import { InvoiceItemResolverService } from '../../core/resolvers/invoice-item-resolver.service';
 import { ProductResolverService } from '../../core/resolvers/product-resolver.service';
-import { CanDeactivateGuard } from '../../core/guards/can-deactivate-invoice.guard';
 import { InvoiceComponent } from './invoice.component';
+import { InvoiceGuard } from '../../core/guards/invoice.guard';
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
         products: ProductResolverService,
         customers: CustomersResolverService
       },
-    canDeactivate: [CanDeactivateGuard],
+    canDeactivate: [InvoiceGuard],
     },
 ];
 

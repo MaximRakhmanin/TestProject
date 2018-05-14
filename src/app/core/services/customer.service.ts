@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 
-import { ConnectableObservable } from 'rxjs/Rx';
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/catch';
@@ -52,10 +52,6 @@ export class CustomerService {
   getCustomers(): Observable<Customer[]> {
     this.stateManagement.getList$.next(this.http.get<Customer[]>('/customers'));
     return this.customers$;
-  }
-  getCustomer(id): Observable<Customer> {
-    this.stateManagement.get$.next(this.http.get<Customer>(`/customers/${id}`));
-    return this.customer$;
   }
 
 }

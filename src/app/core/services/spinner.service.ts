@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ConnectableObservable } from 'rxjs/Rx';
+
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/publish';
 

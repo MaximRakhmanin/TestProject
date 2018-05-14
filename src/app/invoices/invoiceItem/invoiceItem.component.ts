@@ -32,7 +32,6 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   @Input() itemGroup;
   @Input() isEdit;
 
-  @Output() total = new EventEmitter();
   @Output() remove = new EventEmitter();
 
   constructor(
@@ -99,7 +98,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     this.subscriptions.deleteItem.unsubscribe();
   }
 
-  delete() {
+  deleteItem() {
     this.delete$.next(this.itemGroup.value);
   }
 }

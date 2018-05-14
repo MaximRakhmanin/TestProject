@@ -10,6 +10,7 @@ import { InvoiceService } from '../../core/services/invoice.service';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/mapTo';
 
 @Component({
   selector: 'app-invoice-list',
@@ -37,12 +38,12 @@ export class InvoiceListComponent implements OnInit, OnDestroy {
       .mapTo(id);
     })
     .mergeMap(id => this.invoiceService.delete(id))
-    .subscribe(res => console.log('deleteInvoice'));
+    .subscribe(() => console.log('deleteInvoice'));
   }
   ngOnDestroy() {
     this.subscriber.unsubscribe();
   }
-  delInvoice(id) {
+  remove(id) {
     this.deleteInvoice.next(id);
   }
 

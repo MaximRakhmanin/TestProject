@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SpinnerService } from './core/services/spinner.service';
-import { ConnectableObservable } from 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
 
 @Component({

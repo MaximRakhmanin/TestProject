@@ -35,6 +35,7 @@ import { CustomerService } from '../../core/services/customer.service';
 import { ProductService } from '../../core/services/product.service';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Invoice } from '../../models/invoice';
+import 'rxjs/add/operator/startWith';
 
 @Component({
   selector: 'app-invoice',
@@ -46,16 +47,15 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
   form: FormGroup;
-  newItem = new FormControl('', [Validators.required]);
+  addItemFormControl = new FormControl('', [Validators.required]);
   subscriptions: {
     createItem?: Subscription;
     setTotalPrice?: Subscription;
     addedInvoice?: Subscription;
     updateInvoice?: Subscription;
-    modal?: Subscription;
   } = {};
-  checkModal$ = new Subject<any>();
-  outModal$: ConnectableObservable<boolean>;
+  onCanDeactivate$ = new Subject<any>();
+  permissionLeavePage$: ConnectableObservable<boolean>;
   isSuccessFullResponse$: Observable<boolean>;
   requestInvoice$: Observable<Invoice>;
 
@@ -66,9 +66,8 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     private invoiceItemService: InvoiceItemService,
     private router: Router,
     private route: ActivatedRoute,
-    private modal: ModalService,
-  ) {
-  }
+    private modalService: ModalService,
+  ) {}
 
   get customerId() {
     return this.form.get('customer_id');
@@ -104,8 +103,8 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     this.customers$ = this.customerService.customers$;
     this.products$ = this.productService.products$;
 
-    // создание продукта
-    this.subscriptions.createItem = this.newItem.valueChanges
+    // create item
+    this.subscriptions.createItem = this.addItemFormControl.valueChanges
     .switchMap((product_id) => {
       if (this.isEdit) {
         return this.invoiceItemService.create({
@@ -117,12 +116,12 @@ export class InvoiceComponent implements OnInit, OnDestroy {
       }
       return Observable.of({product_id});
     })
-    .subscribe(data => {
-      this.items.push(this.addItem(data));
-      this.newItem.reset(null, {emitEvent: false});
+    .subscribe(item => {
+      this.items.push(this.createItemFormGroup(item));
+      this.addItemFormControl.reset(null, {emitEvent: false});
     });
 
-    // подсчет total
+    // count total
     this.subscriptions.setTotalPrice = Observable.combineLatest(
       this.items.valueChanges.startWith(this.items.value),
       this.discount.valueChanges.startWith(this.discount.value),
@@ -147,39 +146,36 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     .debounceTime(500)
     .skip(1)
     .distinctUntilChanged()
-    .subscribe(res => {
+    .subscribe(() => {
       this.invoiceService.update(this.form.value);
     });
 
     // create invoice
     this.requestInvoice$ = this.saveForm$
-    .switchMap(value => {
-      return this.invoiceService.setInvoice(this.form.value);
-    }).shareReplay(1);
+    .switchMap(invoice => this.invoiceService.setInvoice(invoice))
+    .shareReplay(1);
 
     this.subscriptions.addedInvoice = this.requestInvoice$
-    .subscribe(res => {
-      this.router.navigate(['/', 'invoice']);
-    });
+    .subscribe(() => this.router.navigate(['/', 'invoice']));
 
    this.isSuccessFullResponse$ = this.requestInvoice$
    .mapTo(true)
    .startWith(false);
 
-   this.outModal$ = Observable
+   this.permissionLeavePage$ = Observable
    .merge(
      this.isSuccessFullResponse$,
-     this.checkModal$
+     this.onCanDeactivate$
    )
     .switchMap((isSuccessFullResponse) => {
       if ((this.form.touched || this.items.value.length) && !(isSuccessFullResponse || this.isEdit)) {
-          return this.modal.openModal('Warning', 'Are you sure that you want to leave without having survived?');
+          return this.modalService.openModal('Warning', 'Are you sure that you want to leave without having survived?');
         }
         return Observable.of(true);
     })
     .delay(10)
     .publish();
-   this.outModal$.connect();
+   this.permissionLeavePage$.connect();
   }
 
   ngOnDestroy() {
@@ -202,13 +198,13 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     });
     if (this.isEdit) {
       this.form.reset(this.route.snapshot.data.invoice);
-      const formGroups = this.route.snapshot.data.invoiceItems.map(item => this.addItem(item));
+      const formGroups = this.route.snapshot.data.invoiceItems.map(item => this.createItemFormGroup(item));
       const formArray = new FormArray(formGroups);
       this.form.setControl('items', formArray);
     }
   }
 
-  addItem(item) {
+  createItemFormGroup(item) {
      return new FormGroup({
         id: new FormControl(item.id || null),
         invoice_id: new FormControl(item.invoice_id || null),
@@ -229,11 +225,12 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this.checkModal$.complete();
+    this.onCanDeactivate$.complete();
     this.saveForm$.next(this.form.value);
   }
+
   canDeactivate() {
-   this.checkModal$.next();
-   return this.outModal$.take(1);
+   this.onCanDeactivate$.next();
+   return this.permissionLeavePage$.take(1);
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SpinnerService } from './core/services/spinner.service';
+
 import { Observable } from 'rxjs/Observable';
+
+import { SpinnerService } from './core/services/spinner.service';
 
 @Component({
   selector: 'app-root',

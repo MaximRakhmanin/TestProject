@@ -6,8 +6,8 @@ import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMap';
 
-import { ProductService } from '../services/product.service';
 import { Product } from '../../models/product';
+import { ProductService } from '../services/product.service';
 
 @Injectable()
 export class ProductsResolverService implements Resolve<Product[]> {

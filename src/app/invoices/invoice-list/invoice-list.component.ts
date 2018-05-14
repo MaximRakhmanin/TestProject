@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -8,7 +9,6 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/mapTo';
 
-import { MatDialog } from '@angular/material';
 import { ModalService } from '../../core/services/modal.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { Invoice } from '../../models/invoice';

@@ -23,18 +23,18 @@ const httpOptions = {
 
 @Injectable()
 export class InvoiceService {
-  
+
   invoices$: Observable<Invoice[]>;
   invoice$: Observable<Invoice>;
-  
+
   addInvoice$: Observable<Invoice>;
   deleteInvoice$: Observable<Invoice>;
   updateInvoice$: Observable<Invoice>;
-  
+
   isData$: ConnectableObservable<boolean>;
-  
+
   stateManagement: StateManagement<Invoice> = new StateManagement<Invoice>();
-  
+
   constructor(
     private http: HttpClient,
     private customerService: CustomerService,
@@ -47,7 +47,7 @@ export class InvoiceService {
     .map(([entities, ids]) => {
       return ids.filter(id => entities[id]).map(id => entities[id]);
     })
-    // добавить поле customer
+    // add customer
     .combineLatest(this.customerService.stateManagement.entities$.startWith({}))
     .map(([invoices, customers]) => {
       return invoices.map(invoice => ({
@@ -55,7 +55,7 @@ export class InvoiceService {
         customer: customers[invoice.customer_id],
       }));
     })
-    // добавить поле items
+    // add items
     .combineLatest(this.invoiceItemService.items$.startWith([]))
     .map(([invoices, item]) => {
       return invoices.map((invoice) => {
@@ -70,7 +70,6 @@ export class InvoiceService {
       this.stateManagement.entityId$,
     )
     .map(([entities, id]) => entities[id])
-    // добавить поле customer
     .combineLatest(this.customerService.stateManagement.entities$.startWith({}))
     .map(([invoice, customers]) => {
       return {
@@ -78,7 +77,6 @@ export class InvoiceService {
         customer: customers[invoice.customer_id],
       };
     })
-    // добавить поле items
     .combineLatest(this.invoiceItemService.items$.startWith([]))
     .map(([invoice, item]) => {
       const items = item.filter(({id}) => item.invoice_id === id);
@@ -113,22 +111,27 @@ export class InvoiceService {
     .publishBehavior(false);
     this.isData$.connect();
   }
+
   getInvoices() {
     this.stateManagement.getList$.next(this.http.get<Invoice[]>('/invoices'));
     return this.invoices$;
   }
+
   getInvoice(id): Observable<Invoice> {
     this.stateManagement.get$.next(this.http.get<Invoice>(`/invoices/${id}`));
     return this.invoice$;
   }
+
   setInvoice(invoice) {
     this.stateManagement.add$.next(this.http.post<Invoice>('/invoices', invoice, httpOptions));
     return this.addInvoice$;
   }
+
   delete(id) {
     this.stateManagement.remove$.next(this.http.delete<Invoice>(`/invoices/${id}`, httpOptions));
     return this.deleteInvoice$;
   }
+
   update(invoice) {
     this.stateManagement.update$.next(this.http.put<Invoice>(`/invoices/${invoice.id}`, invoice));
     return this.updateInvoice$;

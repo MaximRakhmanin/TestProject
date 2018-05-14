@@ -4,9 +4,9 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
 
-import { InvoiceService } from '../services/invoice.service';
-
 import { Invoice } from '../../models/invoice';
+
+import { InvoiceService } from '../services/invoice.service';
 
 @Injectable()
 export class InvoiceResolverService implements Resolve<Invoice | boolean> {

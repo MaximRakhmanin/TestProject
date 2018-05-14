@@ -37,8 +37,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
 
   constructor(
     private invoiceItemService: InvoiceItemService
-  ) {
-  }
+  ) {}
 
   get productId() {
     return this.itemGroup.get('product_id');

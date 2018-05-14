@@ -19,6 +19,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/debounceTime';
 
 import {Product} from '../../models/product';
+
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 
 
@@ -27,6 +28,7 @@ export class ProductService {
 
   products$: Observable<Product[]>;
   addProduct$: Observable<Product>;
+
   isData$: ConnectableObservable<boolean>;
   deleteProduct$: Observable<Product>;
   stateManagement: StateManagement<Product> = new StateManagement<Product>();
@@ -63,13 +65,10 @@ export class ProductService {
     .filter(response => response.type === StateRequests.Remove)
     .map(res => res.value[0]);
   }
+
   getProducts(): Observable<Product[]> {
     this.stateManagement.getList$.next(this.http.get<Product[]>('/products'));
     return this.products$;
   }
 
-  delete(id): Observable<Product> {
-    this.stateManagement.remove$.next(this.http.delete<Product>(`/products/${id}`));
-    return this.deleteProduct$;
-  }
 }

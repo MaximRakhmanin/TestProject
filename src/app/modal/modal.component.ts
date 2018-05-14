@@ -14,7 +14,7 @@ export class ModalComponent implements OnInit {
   constructor(
     private dialog: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) { }
+  ) {}
 
   ngOnInit() {
   }

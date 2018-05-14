@@ -44,9 +44,10 @@ import { Invoice } from '../../models/invoice';
 })
 export class InvoiceComponent implements OnInit, OnDestroy {
 
-  saveForm$: Subject<any>;
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
+
+  saveForm$: Subject<any> = new Subject<any>();
   form: FormGroup;
   addItemFormControl = new FormControl('', [Validators.required]);
 
@@ -102,7 +103,6 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.createForm();
-    this.saveForm$ = new Subject<any>();
     this.customers$ = this.customerService.customers$;
     this.products$ = this.productService.products$;
 

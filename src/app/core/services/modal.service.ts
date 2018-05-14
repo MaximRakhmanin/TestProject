@@ -6,7 +6,9 @@ import { ModalComponent } from '../../modal/modal.component';
 @Injectable()
 export class ModalService {
 
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog
+  ) {}
 
   openModal(title, content) {
    return this.dialog.open(ModalComponent, {

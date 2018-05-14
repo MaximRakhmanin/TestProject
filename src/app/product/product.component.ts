@@ -4,6 +4,8 @@ import {ProductService} from '../core/services/product.service';
 import {Product} from '../models/product';
 
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/combineLatest';
@@ -11,11 +13,9 @@ import 'rxjs/add/operator/timeout';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/mapTo';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/debounceTime';
-import { Subscription } from 'rxjs/Subscription';
 
 
 @Component({
@@ -37,13 +37,15 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.products$ = this.productService.products$;
 
     this.requestProduct$ = this.addProduct$
-    .switchMap(() => this.productService.setProduct()).shareReplay(1);
+    .switchMap(() => this.productService.setProduct())
+    .shareReplay(1);
     this.requestProduct$.subscribe();
 
     this.productDisplay$ = Observable.merge(
       this.requestProduct$,
       this.requestProduct$
-      .debounceTime(2000).mapTo(null)
+      .debounceTime(2000)
+      .mapTo(null)
     );
     this.deleteProductSubscription = this.deleteProduct$.switchMap(id => this.productService.delete(id)).subscribe();
   }

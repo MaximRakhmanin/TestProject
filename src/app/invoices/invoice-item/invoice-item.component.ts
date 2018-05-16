@@ -20,7 +20,7 @@ import { InvoiceItemService } from '../../core/services/invoice-item.service';
 })
 export class InvoiceItemComponent implements OnInit, OnDestroy {
 
-  delete$: Subject<InvoiceItem>;
+  onDelete$: Subject<InvoiceItem> = new Subject<InvoiceItem>();
   price$: Observable<number>;
 
   private subscriptions: {
@@ -52,8 +52,6 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.delete$ = new Subject<InvoiceItem>();
-
     this.price$ = Observable.merge(
       this.productId.valueChanges.startWith(this.productId.value),
       this.quantity.valueChanges.startWith(this.quantity.value),
@@ -67,7 +65,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     });
 
     // delete item
-    this.subscriptions.deleteItem = this.delete$
+    this.subscriptions.deleteItem = this.onDelete$
     .switchMap((invoiceItem: InvoiceItem) => {
       if (this.isEdit) {
         return this.invoiceItemService.delete(invoiceItem).take(1);
@@ -99,6 +97,6 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
   }
 
   deleteItem() {
-    this.delete$.next(this.itemGroup.value);
+    this.onDelete$.next(this.itemGroup.value);
   }
 }

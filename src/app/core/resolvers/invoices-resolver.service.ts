@@ -14,7 +14,7 @@ export class InvoicesResolverService implements Resolve<Invoice[]> {
     private invoiceService: InvoiceService
   ) {}
   resolve(): Observable<Invoice[]> {
-    return this.invoiceService.isData$
+     return this.invoiceService.isData$
     .switchMap(isData => {
       if (isData) {
         return this.invoiceService.invoices$;

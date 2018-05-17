@@ -15,8 +15,8 @@ import 'rxjs/add/operator/filter';
 
 import {Product} from '../../models/product';
 import { AppState } from '../../ngrx/app-state/app-state';
-import * as ProductActions from '../../ngrx/product/actions/product.actions';
-import * as ProductGetters from '../../ngrx/product/states/products-getters.state';
+import * as productActions from '../../ngrx/product/actions';
+import * as productGetters from '../../ngrx/product/states/products-getters.state';
 
 
 @Injectable()
@@ -34,7 +34,7 @@ export class ProductService {
     this.isData$ = this.isSuccessFullRequest$.publishBehavior(false);
     this.isData$.connect();
 
-    this.products$ = this.store.select(ProductGetters.getCollectionProducts)
+    this.products$ = this.store.select(productGetters.getCollectionProducts)
     .filter(product => !!product);
 
   }
@@ -44,7 +44,7 @@ export class ProductService {
   }
 
   getListProductDispatch(): Observable<Product[]> {
-    this.store.dispatch(new ProductActions.GetListProduct);
+    this.store.dispatch(new productActions.GetListProduct);
     return this.products$;
   }
 

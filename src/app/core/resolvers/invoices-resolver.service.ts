@@ -3,6 +3,7 @@ import { Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/switchMap';
 
 import { Invoice } from '../../models/invoice';
 import { InvoiceService } from '../services/invoice.service';

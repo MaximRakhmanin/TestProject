@@ -9,10 +9,16 @@ import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/publish';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/publishBehavior';
+import 'rxjs/add/operator/scan';
 
 import { InvoiceItem } from '../../models/invoice-item';
 
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
+import 'rxjs/add/operator/debounceTime';
 
 
 @Injectable()

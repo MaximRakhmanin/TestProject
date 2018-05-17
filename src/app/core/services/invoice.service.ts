@@ -13,6 +13,12 @@ import { CustomerService } from './customer.service';
 import { InvoiceItemService } from './invoice-item.service';
 
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/publishBehavior';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/share';
 
 
 const httpOptions = {

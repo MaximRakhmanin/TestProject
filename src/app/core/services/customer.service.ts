@@ -12,6 +12,9 @@ import 'rxjs/add/operator/publishReplay';
 import { Customer } from '../../models/customer';
 
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/publishBehavior';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class CustomerService {

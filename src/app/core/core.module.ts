@@ -17,6 +17,10 @@ import { CustomersResolverService } from './resolvers/customers-resolver.service
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { InvoiceCanLeaveGuard } from './guards/invoice-can-leave.guard';
+import { StoreModule } from '@ngrx/store';
+import { productReducer } from '../ngrx/product/reducers/product.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { ProductEffects } from '../ngrx/product/effects/product.effects';
 
 
 @NgModule({
@@ -25,6 +29,12 @@ import { InvoiceCanLeaveGuard } from './guards/invoice-can-leave.guard';
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
+    StoreModule.forRoot({
+      products: productReducer
+    }),
+    EffectsModule.forRoot([
+      ProductEffects
+    ])
   ],
   providers: [
     InvoiceService,

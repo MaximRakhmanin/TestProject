@@ -8,6 +8,7 @@ import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/scan';
 
 
 export enum StateRequests {

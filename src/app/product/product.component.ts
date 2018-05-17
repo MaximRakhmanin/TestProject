@@ -23,11 +23,10 @@ templateUrl: './product.component.html',
 export class ProductComponent implements OnInit {
 
   products$: Observable<Product[]>;
-
   displayedColumns = ['id', 'name', 'price'];
 
   constructor(
-    private productService: ProductService
+    private productService: ProductService,
   ) { }
 
   ngOnInit() {

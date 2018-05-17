@@ -23,20 +23,22 @@ import * as productGetters from '../../ngrx/product/states/products-getters.stat
 export class ProductService {
 
   products$: Observable<Product[]>;
-  isData$: ConnectableObservable<boolean>;
-  isSuccessFullRequest$ = new Subject<boolean>();
+  isData$: Observable<boolean>;
 
   constructor(
     private http: HttpClient,
     private store: Store<AppState>,
     ) {
 
-    this.isData$ = this.isSuccessFullRequest$.publishBehavior(false);
-    this.isData$.connect();
+    this.isData$ = this.store.select(productGetters.getIsLoadProducts);
 
-    this.products$ = this.store.select(productGetters.getCollectionProducts)
-    .filter(product => !!product);
-
+    this.products$ = Observable.combineLatest(
+      this.store.select(productGetters.getCollectionProducts),
+      this.isData$
+    )
+    .filter(([products, isData]) => isData)
+    .map(([products, isData]) => products);
+git add
   }
 
   getProducts(): Observable<Product[]> {

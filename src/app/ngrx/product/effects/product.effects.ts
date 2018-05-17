@@ -17,10 +17,9 @@ export class ProductEffects {
   .ofType(ProductActions.Get_List)
   .switchMap(() => {
    return this.productService.getProducts()
-    .map(products => {
-      this.productService.isSuccessFullRequest$.next(true);
-      return new ProductActions.GetListSuccessFullProduct(products);
-    });
+    .map(products =>
+      new ProductActions.GetListSuccessFullProduct(products)
+    );
   });
   constructor(
     private productService: ProductService,

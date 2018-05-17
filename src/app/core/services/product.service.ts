@@ -38,7 +38,6 @@ export class ProductService {
     )
     .filter(([products, isData]) => isData)
     .map(([products, isData]) => products);
-git add
   }
 
   getProducts(): Observable<Product[]> {

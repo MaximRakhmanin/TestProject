@@ -18,9 +18,9 @@ import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { InvoiceCanLeaveGuard } from './guards/invoice-can-leave.guard';
 import { StoreModule } from '@ngrx/store';
-import { productReducer } from '../ngrx/product/reducers/product.reducer';
+import { productReducer } from '../ngrx/product/reducers';
 import { EffectsModule } from '@ngrx/effects';
-import { ProductEffects } from '../ngrx/product/effects/product.effects';
+import { ProductEffects } from '../ngrx/product/effects';
 
 
 @NgModule({

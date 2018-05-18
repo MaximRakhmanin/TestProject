@@ -1,5 +1,5 @@
 import * as ProductActions from '../actions';
-import { initialState, IProductsState } from '../states/product.states';
+import { initialState, IProductsState } from '../states';
 
 export function productReducer(
   state = initialState,
@@ -15,7 +15,6 @@ export function productReducer(
         ...state,
         entities,
         collectionIds,
-        isLoadProduct: true
       };
 }
     default: {

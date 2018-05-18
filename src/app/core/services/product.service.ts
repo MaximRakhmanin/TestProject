@@ -17,6 +17,8 @@ import {Product} from '../../models/product';
 import { AppState } from '../../ngrx/app-state/app-state';
 import * as productActions from '../../ngrx/product/actions';
 import * as productGetters from '../../ngrx/product/states/products-getters.state';
+import { getProductRequestLoaded } from '../../ngrx/requests/nested-states/products/states/products-getters.state';
+
 
 
 @Injectable()
@@ -29,8 +31,7 @@ export class ProductService {
     private http: HttpClient,
     private store: Store<AppState>,
     ) {
-
-    this.isData$ = this.store.select(productGetters.getIsLoadProducts);
+    this.isData$ = this.store.select(getProductRequestLoaded);
 
     this.products$ = Observable.combineLatest(
       this.store.select(productGetters.getCollectionProducts),

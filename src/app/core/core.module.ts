@@ -24,6 +24,7 @@ import { ProductEffects } from '../ngrx/product/effects';
 import { requestReducer } from '../ngrx/requests/reducers';
 import { ProductGetEffect } from '../ngrx/requests/nested-states/products/effects';
 import { productGetReducer } from '../ngrx/requests/nested-states/products/reducers';
+import { appReducer } from '../ngrx/app-state/app-state';
 
 
 @NgModule({
@@ -32,12 +33,7 @@ import { productGetReducer } from '../ngrx/requests/nested-states/products/reduc
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-    StoreModule.forRoot({
-      products: productReducer,
-
-      // requests
-      request: productGetReducer,
-    }),
+    StoreModule.forRoot(appReducer),
     EffectsModule.forRoot([
       ProductEffects,
 

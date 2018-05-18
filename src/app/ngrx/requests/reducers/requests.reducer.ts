@@ -1,11 +1,9 @@
-import { requestInitialState } from '../states';
 import { productGetReducer } from '../nested-states/products/reducers';
 
+
 export function requestReducer(
-  state = requestInitialState,
+  state,
   action
 ) {
-  return {
-    productState: productGetReducer(state.productsGetState, action)
-    };
+  return { getProduct: productGetReducer(state.productsGetState, action) };
   }

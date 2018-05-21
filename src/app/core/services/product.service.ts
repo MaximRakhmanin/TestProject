@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/combineLatest';
@@ -20,7 +18,6 @@ import * as productGetters from '../../ngrx/product/states/products-getters.stat
 import {
   getProductRequestLoader,
 } from '../../ngrx/requests/nested-states/products/states/products-getters.state';
-
 
 
 @Injectable()

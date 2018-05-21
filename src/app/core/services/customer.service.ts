@@ -8,56 +8,42 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/publishReplay';
+import 'rxjs/add/operator/filter';
 
 import { Customer } from '../../models/customer';
 
-import { StateManagement, StateRequests } from '../../shared/utils/state-management';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/publishBehavior';
-import 'rxjs/add/operator/map';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../ngrx/app-state/app-state';
+import { getCollectionCustomers } from '../../ngrx/customers/states/customers-getters.states';
+import { getCustomersRequestLoader } from '../../ngrx/requests/nested-states/customers/states/customers-getters.state';
+import { GetListCustomers } from '../../ngrx/customers/actions';
 
 @Injectable()
 export class CustomerService {
 
   customers$: Observable<Customer[]>;
-  customer$: Observable<Customer>;
-  isData$: ConnectableObservable<boolean>;
-  stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
+  isData$: Observable<boolean>;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<AppState>
   ) {
+    this.isData$ = this.store.select(getCustomersRequestLoader);
 
-    this.customers$ = Observable.
-    combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.collectionIds$
+    this.customers$ = Observable.combineLatest(
+      this.store.select(getCollectionCustomers),
+      this.isData$
     )
-    .map(([entities, ids]) =>
-      ids.map(id => entities[id])
-    );
-
-    this.customer$ = Observable.
-    combineLatest(
-      this.stateManagement.entityId$,
-      this.stateManagement.entities$
-    )
-    .map(([id, entities]) => {
-      return entities[id];
-    });
-
-    this.isData$ = this.stateManagement.responseData$
-    .scan((isData: boolean, {type}) => {
-      if (type === StateRequests.GetList || type === StateRequests.Add || type === StateRequests.Remove) {
-        return true;
-      }
-    }, false)
-    .publishBehavior(false);
-    this.isData$.connect();
+    .filter(([customers, isData]) => isData)
+    .map(([customers, isData]) => customers);
   }
 
   getCustomers(): Observable<Customer[]> {
-    this.stateManagement.getList$.next(this.http.get<Customer[]>('/customers'));
+    return this.http.get<Customer[]>('/customers');
+  }
+
+  getCustomersListDispatch() {
+    this.store.dispatch(new GetListCustomers);
     return this.customers$;
   }
 

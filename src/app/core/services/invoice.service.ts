@@ -19,6 +19,9 @@ import 'rxjs/add/operator/publishBehavior';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/share';
+import { getCustomersEntities } from '../../ngrx/customers/states/customers-getters.states';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../ngrx/app-state/app-state';
 
 
 const httpOptions = {
@@ -44,7 +47,9 @@ export class InvoiceService {
   constructor(
     private http: HttpClient,
     private customerService: CustomerService,
-    private invoiceItemService: InvoiceItemService) {
+    private invoiceItemService: InvoiceItemService,
+    private store: Store<AppState>
+  ) {
 
     this.invoices$ = Observable.combineLatest(
       this.stateManagement.entities$,
@@ -54,7 +59,7 @@ export class InvoiceService {
       return ids.filter(id => entities[id]).map(id => entities[id]);
     })
     // add customer
-    .combineLatest(this.customerService.stateManagement.entities$.startWith({}))
+    .combineLatest(this.store.select(getCustomersEntities).startWith({}))
     .map(([invoices, customers]) => {
       return invoices.map(invoice => ({
         ...invoice,
@@ -76,7 +81,7 @@ export class InvoiceService {
       this.stateManagement.entityId$,
     )
     .map(([entities, id]) => entities[id])
-    .combineLatest(this.customerService.stateManagement.entities$.startWith({}))
+    .combineLatest(this.store.select(getCustomersEntities).startWith({}))
     .map(([invoice, customers]) => {
       return {
         ...invoice,

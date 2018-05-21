@@ -19,7 +19,6 @@ import * as productActions from '../../ngrx/product/actions';
 import * as productGetters from '../../ngrx/product/states/products-getters.state';
 import {
   getProductRequestLoader,
-  getProductRequestState
 } from '../../ngrx/requests/nested-states/products/states/products-getters.state';
 
 

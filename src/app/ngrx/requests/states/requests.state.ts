@@ -4,4 +4,4 @@ export interface IRequestState {
   productsGetState?: IProductRequest;
 }
 
-export const requestInitialState: IRequestState = {};
+export const requestsInitialState: IRequestState = {};

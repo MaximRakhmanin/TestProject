@@ -18,13 +18,10 @@ import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { InvoiceCanLeaveGuard } from './guards/invoice-can-leave.guard';
 import { StoreModule } from '@ngrx/store';
-import { productReducer } from '../ngrx/product/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { ProductEffects } from '../ngrx/product/effects';
-import { requestReducer } from '../ngrx/requests/reducers';
 import { ProductGetEffect } from '../ngrx/requests/nested-states/products/effects';
-import { productGetReducer } from '../ngrx/requests/nested-states/products/reducers';
-import { appReducer } from '../ngrx/app-state/app-state';
+import { reducers } from '../ngrx/app-state/app-state';
 
 
 @NgModule({
@@ -33,7 +30,7 @@ import { appReducer } from '../ngrx/app-state/app-state';
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-    StoreModule.forRoot(appReducer),
+    StoreModule.forRoot(reducers),
     EffectsModule.forRoot([
       ProductEffects,
 

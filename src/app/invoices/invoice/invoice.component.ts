@@ -110,12 +110,12 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     this.subscriptions.createItem = this.addItemFormControl.valueChanges
     .switchMap((product_id) => {
       if (this.isEdit) {
-        return this.invoiceItemService.create({
+        return this.invoiceItemService.postItemDispatch({
           invoice_id: this.invoiceId,
           product_id: product_id,
           quantity: 1,
         })
-        .take(1);
+        .take(1).do(console.log);
       }
       return Observable.of({product_id});
     })

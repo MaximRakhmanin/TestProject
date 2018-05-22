@@ -1,4 +1,3 @@
-///<reference path="../../../../node_modules/rxjs/add/operator/combineLatest.d.ts"/>
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -23,12 +22,14 @@ import { StateManagement, StateRequests } from '../../shared/utils/state-managem
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/app-state/app-state';
 import { GetListItem } from '../../ngrx/invoice-item/actions';
-import { getCollectionsInvoiceItem } from '../../ngrx/invoice-item/states/invoice-item-getters.state';
+import { getCollectionsInvoiceItem, getCurrentItem } from '../../ngrx/invoice-item/states/invoice-item-getters.state';
 import {
   getItemGetListRequestLoaded
 } from '../../ngrx/requests/nested-states/invoice-item/nested-states/get-list-items/states/item-get-list-getters';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/withLatestFrom';
+import { PostItem } from '../../ngrx/invoice-item/actions/invoice-item.actions';
+import 'rxjs/add/operator/skip';
 
 
 @Injectable()
@@ -50,7 +51,7 @@ export class InvoiceItemService {
     .filter(([items, isData]) => isData)
     .map(([items, isData]) => items);
 
-
+    this.addItem$ = this.store.select(getCurrentItem).skip(1);
     //this.items$.subscribe(console.log);
     //this.updateItem$ = Observable.
     //combineLatest(
@@ -80,8 +81,7 @@ export class InvoiceItemService {
   }
 
   create(item) {
-    this.stateManagement.add$.next(this.http.post<InvoiceItem>(`/invoices/${item.invoice_id}/items`, item));
-    return this.addItem$;
+    return this.http.post<InvoiceItem>(`/invoices/${item.invoice_id}/items`, item);
   }
 
   update(item) {
@@ -96,5 +96,9 @@ export class InvoiceItemService {
   getListItemsDispatch(id: number | string) {
     this.store.dispatch(new GetListItem(id));
     return this.items$;
+  }
+  postItemDispatch(item) {
+    this.store.dispatch(new PostItem(item));
+    return this.addItem$;
   }
 }

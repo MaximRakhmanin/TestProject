@@ -8,6 +8,10 @@ import 'rxjs/add/operator/map';
 
 import * as invoiceItemActions from '../actions';
 import * as requestItemsActions from '../../requests/nested-states/invoice-item/actions';
+import {
+  ItemPostActionTypes,
+  PostItemAction
+} from '../../requests/nested-states/invoice-item/nested-states/post-item/actions';
 
 @Injectable()
 export class InvoiceItemEffects {
@@ -23,6 +27,20 @@ export class InvoiceItemEffects {
   .ofType<invoiceItemActions.itemActions>(requestItemsActions.actionTypes.REQUEST_SUCCESS)
   .map(items => {
     return new invoiceItemActions.GetListSuccessFullItem(items.payload);
+  });
+
+  @Effect()
+  itemPost$ = this.actions$
+  .ofType(invoiceItemActions.Post_Item)
+  .map((action: any) => {
+    return new PostItemAction(action.payload);
+  });
+
+  @Effect()
+  itemPostRequest$ = this.actions$
+  .ofType(ItemPostActionTypes.REQUEST_SUCCESS)
+  .map((item: any) => {
+    return new invoiceItemActions.PostItemSuccessFull([item.payload]);
   });
   constructor(
     private actions$: Actions,

@@ -12,15 +12,16 @@ import * as requestItem from '../actions';
 import { InvoiceItemService } from '../../../../../../../core/services/invoice-item.service';
 
 @Injectable()
-export class ItemGetListEffect {
+export class PostItemEffect {
 
   @Effect()
   itemGetRequest$: Observable<Action> = this.actions$
-  .ofType(requestItem.actionTypes.REQUEST)
+  .ofType(requestItem.ItemPostActionTypes.REQUEST)
   .switchMap((action: any) => {
-    return this.invoiceItemService.getItems(action.payload)
-    .map(items => new requestItem.ItemGetListSuccessAction(items))
-    .catch(error => Observable.of(new requestItem.ItemGetListFailAction(error)));
+    debugger;
+    return this.invoiceItemService.create(action.payload)
+    .map(items => new requestItem.PostItemSuccessAction(items))
+    .catch(error => Observable.of(new requestItem.PostItemFailAction(error)));
   });
 
   constructor(

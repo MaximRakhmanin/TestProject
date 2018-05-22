@@ -1,13 +1,13 @@
 import { customersGetInitialState, ICustomersRequest } from '../states';
 import * as customersActions from '../actions';
-import { actionTypes } from '../actions';
+import { CustomersActionTypes } from '../actions';
 
 export function customersGetReducer(
   state: ICustomersRequest = customersGetInitialState,
   {type, payload}: customersActions.customersGetActions
 ) {
   switch (type) {
-    case actionTypes.REQUEST: {
+    case CustomersActionTypes.REQUEST: {
       return {
         ...state,
         loading: true,
@@ -16,8 +16,8 @@ export function customersGetReducer(
         data: null
       };
     }
-    case actionTypes.REQUEST_SUCCESS:
-    case actionTypes.REQUEST_FAIL:
+    case CustomersActionTypes.REQUEST_SUCCESS:
+    case CustomersActionTypes.REQUEST_FAIL:
       return {
         ...state,
         loading: false,

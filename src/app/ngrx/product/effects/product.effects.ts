@@ -23,7 +23,7 @@ export class ProductEffects {
 
   @Effect()
   productRequest$: Observable<Action> = this.actions$
-  .ofType<productActions.Actions>(requestProductsActions.actionTypes.REQUEST_SUCCESS)
+  .ofType<productActions.Actions>(requestProductsActions.productsActionTypes.REQUEST_SUCCESS)
   .map(products => new productActions.GetListSuccessFullProduct(products.payload));
 
   constructor(

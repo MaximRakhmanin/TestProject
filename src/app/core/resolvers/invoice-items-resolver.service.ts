@@ -16,17 +16,14 @@ import { InvoiceItemService } from '../services/invoice-item.service';
 export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | boolean> {
 
   constructor(
-    private invoiceItemService: InvoiceItemService
+    private invoiceItemService: InvoiceItemService,
   ) { }
 
   resolve(route: ActivatedRouteSnapshot) {
     const id = route.paramMap.get('id');
     if (id) {
-      return this.invoiceItemService.stateManagement.responseDataRequests$
-      .switchMapTo(this.invoiceItemService.getItem(id).take(1))
-      .take(1);
+      return this.invoiceItemService.getListItemsDispatch(id).take(1);
     }
-
     return false;
   }
 }

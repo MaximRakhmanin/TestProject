@@ -1,11 +1,11 @@
 // actions
-export * from './actions/index';
+export * from './actions';
 
 // effects
-export * from './effects/index';
+export * from './effects';
 
 // reducers
-export * from './reducers/index';
+export * from './reducers';
 
 // state
-export * from './states/index';
+export * from './states';

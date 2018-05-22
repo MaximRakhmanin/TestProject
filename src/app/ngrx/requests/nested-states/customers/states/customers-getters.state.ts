@@ -5,11 +5,11 @@ import { ICustomersRequest } from './customers-get.state';
 
 
 
-export const getProductRequestState = createSelector(
+export const getCustomerRequestState = createSelector(
   getRequestsState,
   (state: IRequestState) => state.customersGetState
 );
 export const getCustomersRequestLoader = createSelector(
-  getProductRequestState,
+  getCustomerRequestState,
   (state: ICustomersRequest) => state.loaded
 );

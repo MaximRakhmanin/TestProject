@@ -12,14 +12,14 @@ import * as requestItemsActions from '../../requests/nested-states/invoice-item/
 @Injectable()
 export class InvoiceItemEffects {
   @Effect()
-  customers$ = this.actions$
+  items$ = this.actions$
   .ofType(invoiceItemActions.Get_List)
-  .map(() => {
-    return new invoiceItemActions.GetListItem();
+  .map((action: any) => {
+    return new requestItemsActions.ItemGetListAction(action.payload);
   });
 
   @Effect()
-  customersRequest$: Observable<Action> = this.actions$
+  itemsRequest$: Observable<Action> = this.actions$
   .ofType<invoiceItemActions.itemActions>(requestItemsActions.actionTypes.REQUEST_SUCCESS)
   .map(items => {
     return new invoiceItemActions.GetListSuccessFullItem(items.payload);

@@ -10,7 +10,7 @@ export class GetListItem implements Action {
 
   readonly type = Get_List;
 
-  constructor(public payload?: undefined ) {}
+  constructor(public payload?: any) {}
 }
 
 export class GetListSuccessFullItem implements Action {

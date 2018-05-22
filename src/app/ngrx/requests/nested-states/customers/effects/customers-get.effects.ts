@@ -15,7 +15,7 @@ export class CustomersGetEffect {
 
   @Effect()
   productGetRequest$: Observable<Action> = this.actions$
-  .ofType(customersRequestActions.actionTypes.REQUEST)
+  .ofType(customersRequestActions.CustomersActionTypes.REQUEST)
   .switchMap(action => {
     return this.customerService.getCustomers()
     .map(customers => new customersRequestActions.CustomersGetSuccessAction(customers))

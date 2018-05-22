@@ -1,1 +1,1 @@
-export * from '../nested-states/get-list-items/effects/index';
+export * from '../nested-states/get-list-items/effects';

@@ -24,6 +24,8 @@ import { ProductGetEffect } from '../ngrx/requests/nested-states/products/effect
 import { reducers } from '../ngrx/app-state/app-state';
 import { CustomersGetEffect } from '../ngrx/requests/nested-states/customers/effects';
 import { CustomersEffects } from '../ngrx/customers/effects';
+import { InvoiceItemEffects } from '../ngrx/invoice-item/effects';
+import { ItemGetListEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/get-list-items/effects/item-get-list.effects';
 
 
 @NgModule({
@@ -36,10 +38,12 @@ import { CustomersEffects } from '../ngrx/customers/effects';
     EffectsModule.forRoot([
       ProductEffects,
       CustomersEffects,
+      InvoiceItemEffects,
 
       // requests
       ProductGetEffect,
       CustomersGetEffect,
+      ItemGetListEffect
     ])
   ],
   providers: [

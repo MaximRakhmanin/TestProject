@@ -1,10 +1,10 @@
 import { IItemGetList, itemGetInitialState } from '../states';
-import { actionTypes, ItemGetListAction } from '../actions';
+import { actionTypes, ItemGetListActions } from '../actions';
 
 
 export function ItemGetListReducer(
   state: IItemGetList = itemGetInitialState,
-  {type, payload}: ItemGetListAction
+  {type, payload}: ItemGetListActions
 ) {
   switch (type) {
     case actionTypes.REQUEST: {

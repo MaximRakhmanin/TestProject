@@ -21,7 +21,7 @@ export class CustomersEffects {
 
   @Effect()
   customersRequest$: Observable<Action> = this.actions$
-  .ofType<customerActions.CustomersActions>(requestCustomersActions.actionTypes.REQUEST_SUCCESS)
+  .ofType<customerActions.CustomersActions>(requestCustomersActions.CustomersActionTypes.REQUEST_SUCCESS)
   .map(customers => {
     return new customerActions.GetListSuccessFullCustomers(customers.payload);
   });

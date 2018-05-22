@@ -2,32 +2,32 @@ import { Action } from '@ngrx/store';
 
 export const PRODUCTS_GET = 'Product-Get';
 
-export const actionTypes = {
+export const productsActionTypes = {
   REQUEST: `[${PRODUCTS_GET}] Request`,
   REQUEST_SUCCESS: `[${PRODUCTS_GET}] Request Success`,
   REQUEST_FAIL: `[${PRODUCTS_GET}] Request Fail`
 };
 
 export class ProductGetAction implements Action {
-  type = actionTypes.REQUEST;
+  type = productsActionTypes.REQUEST;
 
   constructor(public payload?: any) {
   }
 }
 export class ProductGetSuccessAction implements Action {
-  type = actionTypes.REQUEST_SUCCESS;
+  type = productsActionTypes.REQUEST_SUCCESS;
 
   constructor(public payload: any) {
   }
 }
 export class ProductGetFailAction implements Action {
-  type = actionTypes.REQUEST_FAIL;
+  type = productsActionTypes.REQUEST_FAIL;
 
   constructor(public payload: any) {
   }
 }
 
 
-export type Actions = ProductGetAction |
+export type ProductsGetActions = ProductGetAction |
   ProductGetSuccessAction |
   ProductGetFailAction;

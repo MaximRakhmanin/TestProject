@@ -1,13 +1,13 @@
 
 import { IProductRequest, productGetInitialState } from '../states';
-import { Actions, actionTypes } from '../actions';
+import { ProductsGetActions, productsActionTypes } from '../actions';
 
 export function productGetReducer(
   state: IProductRequest = productGetInitialState,
-  {type, payload}: Actions
+  {type, payload}: ProductsGetActions
 ) {
   switch (type) {
-    case actionTypes.REQUEST: {
+    case productsActionTypes.REQUEST: {
       return {
         ...state,
         loading: true,
@@ -16,8 +16,8 @@ export function productGetReducer(
         data: null
       };
     }
-    case actionTypes.REQUEST_SUCCESS:
-    case actionTypes.REQUEST_FAIL:
+    case productsActionTypes.REQUEST_SUCCESS:
+    case productsActionTypes.REQUEST_FAIL:
       return {
         ...state,
         loading: false,

@@ -1,1 +1,1 @@
-export * from './invoice-item-get.state';
+export * from './invoice-item.state';

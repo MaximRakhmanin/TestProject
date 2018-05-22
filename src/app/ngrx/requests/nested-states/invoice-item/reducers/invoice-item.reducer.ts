@@ -1,5 +1,5 @@
 
-import { initialItemState } from '../states/invoice-item.state';
+import { initialItemState } from '../states';
 import { ItemGetListReducer } from '../nested-states/get-list-items/reducers';
 
 export function itemReducer(

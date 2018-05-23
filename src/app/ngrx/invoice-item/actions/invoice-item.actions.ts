@@ -7,6 +7,8 @@ export const Get_List = `[${INVOICE_ITEM}] Get_list`;
 export const Get_List_Success_full = `[${INVOICE_ITEM}] Get_List_Success_full`;
 export const Post_Item = `[${INVOICE_ITEM}] Post_Item`;
 export const Post_Item_Success_full = `[${INVOICE_ITEM}] Post_Item_Success_full`;
+export const Put_Item = `[${INVOICE_ITEM}] Put_Item`;
+export const Put_Item_Success_full = `[${INVOICE_ITEM}] Put_Item_Success_full`;
 
 export class GetListItem implements Action {
 
@@ -33,9 +35,23 @@ export class PostItemSuccessFull implements Action {
 
   constructor(public payload: any) {}
 }
+export class PutItem implements Action {
+
+  readonly type = Put_Item;
+
+  constructor(public payload: any) {}
+}
+export class PutItemSuccessFull implements Action {
+
+  readonly type = Put_Item_Success_full;
+
+  constructor(public payload: any) {}
+}
 
 export type itemActions =
   GetListItem |
   GetListSuccessFullItem |
   PostItem |
-  PostItemSuccessFull;
+  PostItemSuccessFull |
+  PutItem |
+  PutItemSuccessFull;

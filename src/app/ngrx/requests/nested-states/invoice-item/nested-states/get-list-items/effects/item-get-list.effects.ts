@@ -18,7 +18,7 @@ export class ItemGetListEffect {
   itemGetRequest$: Observable<Action> = this.actions$
   .ofType(requestItem.actionTypes.REQUEST)
   .switchMap((action: any) => {
-    return this.invoiceItemService.getItems(action.payload)
+    return this.invoiceItemService.getItemsRequest(action.payload)
     .map(items => new requestItem.ItemGetListSuccessAction(items))
     .catch(error => Observable.of(new requestItem.ItemGetListFailAction(error)));
   });

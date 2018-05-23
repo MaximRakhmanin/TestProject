@@ -12,3 +12,8 @@ export const getItemPostloaded = createSelector(
   getItemPostRequestState,
   (state: IItemPost) => state.loaded
 );
+
+export const getItemPostData = createSelector(
+  getItemPostRequestState,
+  (state: IItemPost) => state.data
+);

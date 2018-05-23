@@ -84,7 +84,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     .debounceTime(500)
     .distinctUntilChanged()
     .switchMap(() => {
-      return this.invoiceItemService.update(this.itemGroup.value);
+      return this.invoiceItemService.updateItem(this.itemGroup.value);
     })
     .publish()
     .connect();

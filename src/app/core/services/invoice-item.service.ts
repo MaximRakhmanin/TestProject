@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/shareReplay';
@@ -15,21 +14,23 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/publishBehavior';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/skip';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/withLatestFrom';
 
 import { InvoiceItem } from '../../models/invoice-item';
+import { PostItem } from '../../ngrx/invoice-item/actions';
 
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/app-state/app-state';
-import { GetListItem } from '../../ngrx/invoice-item/actions';
-import { getCollectionsInvoiceItem, getCurrentItem } from '../../ngrx/invoice-item/states/invoice-item-getters.state';
+import { GetListItem, PutItem } from '../../ngrx/invoice-item/actions';
+import { getCollectionsInvoiceItem} from '../../ngrx/invoice-item/states/invoice-item-getters.state';
 import {
-  getItemGetListRequestLoaded
+getItemGetListRequestLoaded
 } from '../../ngrx/requests/nested-states/invoice-item/nested-states/get-list-items/states/item-get-list-getters';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/withLatestFrom';
-import { PostItem } from '../../ngrx/invoice-item/actions/invoice-item.actions';
-import 'rxjs/add/operator/skip';
+import { getItemPutRequestData } from '../../ngrx/requests/nested-states/invoice-item/nested-states/put-item/states/put-item-getters.state';
+import { getItemPostData } from '../../ngrx/requests/nested-states/invoice-item/nested-states/post-item/states/post-item-getters.states';
 
 
 @Injectable()
@@ -51,7 +52,9 @@ export class InvoiceItemService {
     .filter(([items, isData]) => isData)
     .map(([items, isData]) => items);
 
-    this.addItem$ = this.store.select(getCurrentItem).skip(1);
+    this.addItem$ = this.store.select(getItemPostData).skip(1);
+
+    this.updateItem$ = this.store.select(getItemPutRequestData);
     //this.items$.subscribe(console.log);
     //this.updateItem$ = Observable.
     //combineLatest(
@@ -76,29 +79,32 @@ export class InvoiceItemService {
     //.map(res => res.value[0]);
   }
 
-  getItems(id): Observable<InvoiceItem[]> {
+  getItemsRequest(id): Observable<InvoiceItem[]> {
     return this.http.get<InvoiceItem[]>(`/invoices/${id}/items`);
   }
 
-  create(item) {
+  createRequest(item) {
     return this.http.post<InvoiceItem>(`/invoices/${item.invoice_id}/items`, item);
   }
 
-  update(item) {
-    this.stateManagement.update$.next(this.http.put<InvoiceItem>(`/invoices/${item.invoice_id}/items/${item.id}`, item));
-    return this.updateItem$;
+  updateRequest(item) {
+   return this.http.put<InvoiceItem>(`/invoices/${item.invoice_id}/items/${item.id}`, item);
   }
 
   delete(item) {
     this.stateManagement.remove$.next(this.http.delete(`/invoices/${item.invoice_id}/items/${item.id}`).mapTo(item));
     return this.stateManagement.removeResponse$;
   }
-  getListItemsDispatch(id: number | string) {
+  getListItems(id: number | string) {
     this.store.dispatch(new GetListItem(id));
     return this.items$;
   }
-  postItemDispatch(item) {
+  postItem(item) {
     this.store.dispatch(new PostItem(item));
     return this.addItem$;
+  }
+  updateItem(item) {
+    this.store.dispatch(new PutItem(item));
+    return this.updateItem$;
   }
 }

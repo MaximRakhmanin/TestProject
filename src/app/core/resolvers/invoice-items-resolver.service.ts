@@ -22,7 +22,7 @@ export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | bool
   resolve(route: ActivatedRouteSnapshot) {
     const id = route.paramMap.get('id');
     if (id) {
-      return this.invoiceItemService.getListItemsDispatch(id).take(1);
+      return this.invoiceItemService.getListItems(id).take(1);
     }
     return false;
   }

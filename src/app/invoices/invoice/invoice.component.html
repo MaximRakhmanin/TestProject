@@ -29,7 +29,7 @@
                 <td>
                   <mat-form-field>
                       <mat-select [formControl]="addItemFormControl" placeholder="AddProduct">
-                        <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product.name}}</mat-option>
+                        <mat-option *ngFor="let product of products$ | async" [value]="product.id">{{ product?.name}}</mat-option>
                       </mat-select>
                       <mat-error *ngIf="addItemFormControl.invalid && !items.length">
                         <span *ngIf="addItemFormControl.hasError('required')">Product is required</span>

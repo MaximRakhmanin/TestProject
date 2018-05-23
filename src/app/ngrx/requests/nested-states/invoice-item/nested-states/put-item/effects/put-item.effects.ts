@@ -12,15 +12,15 @@ import * as requestItem from '../actions';
 import { InvoiceItemService } from '../../../../../../../core/services/invoice-item.service';
 
 @Injectable()
-export class PostItemEffect {
+export class PutItemEffect {
 
   @Effect()
   itemGetRequest$: Observable<Action> = this.actions$
-  .ofType(requestItem.ItemPostActionTypes.REQUEST)
+  .ofType(requestItem.ItemPutActionTypes.REQUEST)
   .switchMap((action: any) => {
-    return this.invoiceItemService.createRequest(action.payload)
-    .map(items => new requestItem.PostItemSuccessAction(items))
-    .catch(error => Observable.of(new requestItem.PostItemFailAction(error)));
+    return this.invoiceItemService.updateRequest(action.payload)
+    .map(items => new requestItem.PutItemSuccessAction(items))
+    .catch(error => Observable.of(new requestItem.PutItemFailAction(error)));
   });
 
   constructor(

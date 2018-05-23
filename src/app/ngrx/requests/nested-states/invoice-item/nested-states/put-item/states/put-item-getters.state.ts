@@ -1,4 +1,4 @@
-import { IItemRequestState } from '../../../states/invoice-item.state';
+import { IItemRequestState } from '../../../states';
 import { createSelector } from '@ngrx/store';
 import { getItemRequestState } from '../../../states/invoice-item-getters';
 import { IItemPut } from './put-item.states';

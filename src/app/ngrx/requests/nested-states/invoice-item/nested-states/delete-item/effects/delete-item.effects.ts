@@ -9,17 +9,18 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import * as requestItem from '../actions';
 import { InvoiceItemService } from '../../../../../../../core/services/invoice-item.service';
+import { ActionTypes } from '../actions';
 
 @Injectable()
-export class ItemGetListEffect {
+export class DeleteItemEffect {
 
   @Effect()
   itemGetRequest$: Observable<Action> = this.actions$
-  .ofType(requestItem.actionTypes.REQUEST)
+  .ofType(ActionTypes.REQUEST)
   .switchMap((action: any) => {
-    return this.invoiceItemService.getItemsRequest(action.payload)
-    .map(items => new requestItem.ItemGetListSuccessAction(items))
-    .catch(error => Observable.of(new requestItem.ItemGetListFailAction(error)));
+    return this.invoiceItemService.deleteRequest(action.payload)
+    .map(items => new requestItem.DeleteItemSuccessAction(items))
+    .catch(error => Observable.of(new requestItem.DeleteItemFailAction(error)));
   });
 
   constructor(

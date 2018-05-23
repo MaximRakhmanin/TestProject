@@ -68,7 +68,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     this.subscriptions.deleteItem = this.onDelete$
     .switchMap((invoiceItem: InvoiceItem) => {
       if (this.isEdit) {
-        return this.invoiceItemService.delete(invoiceItem).take(1);
+        return this.invoiceItemService.deleteItem(invoiceItem).take(1);
       }
       return Observable.of(invoiceItem);
     })

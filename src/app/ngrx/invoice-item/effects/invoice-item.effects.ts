@@ -16,6 +16,10 @@ import {
   ItemPutActionTypes,
   PutItemAction
 } from '../../requests/nested-states/invoice-item/nested-states/put-item/actions';
+import {
+  ActionTypes,
+  DeleteItemAction
+} from '../../requests/nested-states/invoice-item/nested-states/delete-item/actions';
 
 @Injectable()
 export class InvoiceItemEffects {
@@ -59,6 +63,21 @@ export class InvoiceItemEffects {
   .ofType(ItemPutActionTypes.REQUEST_SUCCESS)
   .map((action: any) => {
     return new invoiceItem.PutItemSuccessFull([action.payload]);
+  });
+
+  @Effect()
+  itemDelete$ = this.actions$
+  .ofType(invoiceItem.Delete_Item)
+  .map((action: any) => {
+    return new DeleteItemAction(action.payload);
+  });
+
+  @Effect()
+  itemDeleteRequest$ = this.actions$
+  .ofType(ActionTypes.REQUEST_SUCCESS)
+  .map((action: any) => {
+    debugger;
+    return new invoiceItem.DeleteItemSuccessFull([action.payload]);
   });
 
   constructor(

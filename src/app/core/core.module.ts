@@ -28,6 +28,7 @@ import { InvoiceItemEffects } from '../ngrx/invoice-item/effects';
 import { ItemGetListEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/get-list-items/effects/item-get-list.effects';
 import { PostItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/post-item/effects';
 import { PutItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/put-item/effects';
+import { DeleteItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/delete-item/effects/delete-item.effects';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import { PutItemEffect } from '../ngrx/requests/nested-states/invoice-item/neste
       ItemGetListEffect,
       PostItemEffect,
       PutItemEffect,
+      DeleteItemEffect
     ])
   ],
   providers: [

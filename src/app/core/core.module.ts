@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { httpInterceptorProviders } from './interceptors';
@@ -18,8 +20,6 @@ import { CustomersResolverService } from './resolvers/customers-resolver.service
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { InvoiceCanLeaveGuard } from './guards/invoice-can-leave.guard';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
 import { ProductEffects } from '../ngrx/product/effects';
 import { ProductGetEffect } from '../ngrx/requests/nested-states/products/effects';
 import { reducers } from '../ngrx/app-state/app-state';
@@ -30,6 +30,8 @@ import { ItemGetListEffect } from '../ngrx/requests/nested-states/invoice-item/n
 import { PostItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/post-item/effects';
 import { PutItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/put-item/effects';
 import { DeleteItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/delete-item/effects/delete-item.effects';
+import { InvoiceEffects } from '../ngrx/invoices/effects';
+import { InvoiceGetListEffect } from '../ngrx/requests/nested-states/invoices/nested-states/get-list-invoices/effects/get-list-invoices.effects';
 
 
 @NgModule({
@@ -39,10 +41,14 @@ import { DeleteItemEffect } from '../ngrx/requests/nested-states/invoice-item/ne
     BrowserModule,
     HttpClientModule,
     StoreModule.forRoot(reducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+    }),
     EffectsModule.forRoot([
       ProductEffects,
       CustomersEffects,
       InvoiceItemEffects,
+      InvoiceEffects,
 
       // requests
       ProductGetEffect,
@@ -50,7 +56,8 @@ import { DeleteItemEffect } from '../ngrx/requests/nested-states/invoice-item/ne
       ItemGetListEffect,
       PostItemEffect,
       PutItemEffect,
-      DeleteItemEffect
+      DeleteItemEffect,
+      InvoiceGetListEffect,
     ])
   ],
   providers: [

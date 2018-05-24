@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 
+import * as _ from 'lodash'
+
 import { SpinnerService } from './core/services/spinner.service';
 
 @Component({

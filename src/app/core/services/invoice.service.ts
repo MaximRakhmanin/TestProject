@@ -22,6 +22,8 @@ import 'rxjs/add/operator/share';
 import { getCustomersEntities } from '../../ngrx/customers/states/customers-getters.states';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/app-state/app-state';
+import { GetListInvoices } from '../../ngrx/invoices/actions';
+import { getCollectionsInvoices } from '../../ngrx/invoices/states/invoices-getters.state';
 
 
 const httpOptions = {
@@ -51,13 +53,7 @@ export class InvoiceService {
     private store: Store<AppState>
   ) {
 
-    this.invoices$ = Observable.combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.collectionIds$,
-    )
-    .map(([entities, ids]) => {
-      return ids.filter(id => entities[id]).map(id => entities[id]);
-    })
+    this.invoices$ = this.store.select(getCollectionsInvoices)
     // add customer
     .combineLatest(this.store.select(getCustomersEntities).startWith({}))
     .map(([invoices, customers]) => {
@@ -123,9 +119,8 @@ export class InvoiceService {
     this.isData$.connect();
   }
 
-  getInvoices() {
-    this.stateManagement.getList$.next(this.http.get<Invoice[]>('/invoices'));
-    return this.invoices$;
+  invoicesRequest() {
+    return this.http.get<Invoice[]>('/invoices');
   }
 
   getInvoice(id): Observable<Invoice> {
@@ -146,5 +141,9 @@ export class InvoiceService {
   update(invoice) {
     this.stateManagement.update$.next(this.http.put<Invoice>(`/invoices/${invoice.id}`, invoice));
     return this.updateInvoice$;
+  }
+  getInvoices() {
+    this.store.dispatch(new GetListInvoices());
+    return this.invoices$;
   }
 }

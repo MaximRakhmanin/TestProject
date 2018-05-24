@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { httpInterceptorProviders } from './interceptors';
 import { InvoiceItemService } from './services/invoice-item.service';
@@ -25,7 +26,7 @@ import { reducers } from '../ngrx/app-state/app-state';
 import { CustomersGetEffect } from '../ngrx/requests/nested-states/customers/effects';
 import { CustomersEffects } from '../ngrx/customers/effects';
 import { InvoiceItemEffects } from '../ngrx/invoice-item/effects';
-import { ItemGetListEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/get-list-items/effects/item-get-list.effects';
+import { ItemGetListEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/get-list-items/effects';
 import { PostItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/post-item/effects';
 import { PutItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/put-item/effects';
 import { DeleteItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/delete-item/effects/delete-item.effects';

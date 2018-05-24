@@ -1,7 +1,7 @@
 import { productGetReducer } from '../nested-states/products/reducers';
 import { IRequestState, requestsInitialState } from '../states';
 import { customersGetReducer } from '../nested-states/customers/reducers';
-import { itemReducer } from '../nested-states/invoice-item/reducers/invoice-item.reducer';
+import { itemReducer } from '../nested-states/invoice-item/reducers';
 
 
 export function requestReducer(

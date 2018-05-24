@@ -20,7 +20,7 @@ export class CustomersResolverService implements Resolve<Customer[]> {
       if (isData) {
         return this.customerService.customers$;
       }
-      return this.customerService.getCustomersListDispatch();
+      return this.customerService.getCustomers();
     })
     .take(1);
   }

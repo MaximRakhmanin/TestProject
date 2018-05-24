@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/catch';
@@ -12,7 +12,6 @@ import 'rxjs/add/operator/filter';
 
 import { Customer } from '../../models/customer';
 
-import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/app-state/app-state';
 import { getCollectionCustomers } from '../../ngrx/customers/states/customers-getters.states';
 import { getCustomersRequestLoader } from '../../ngrx/requests/nested-states/customers/states/customers-getters.state';
@@ -38,11 +37,11 @@ export class CustomerService {
     .map(([customers, isData]) => customers);
   }
 
-  getCustomers(): Observable<Customer[]> {
+  CustomersRequest(): Observable<Customer[]> {
     return this.http.get<Customer[]>('/customers');
   }
 
-  getCustomersListDispatch() {
+  getCustomers() {
     this.store.dispatch(new GetListCustomers);
     return this.customers$;
   }

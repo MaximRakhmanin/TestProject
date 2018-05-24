@@ -76,7 +76,6 @@ export class InvoiceItemEffects {
   itemDeleteRequest$ = this.actions$
   .ofType(ActionTypes.REQUEST_SUCCESS)
   .map((action: any) => {
-    debugger;
     return new invoiceItem.DeleteItemSuccessFull([action.payload]);
   });
 

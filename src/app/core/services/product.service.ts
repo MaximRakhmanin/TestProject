@@ -39,11 +39,11 @@ export class ProductService {
     .map(([products, isData]) => products);
   }
 
-  getProducts(): Observable<Product[]> {
+  ProductsRequest(): Observable<Product[]> {
     return this.http.get<Product[]>('/products');
   }
 
-  getListProductDispatch(): Observable<Product[]> {
+  getListProducts(): Observable<Product[]> {
     this.store.dispatch(new productActions.GetListProduct);
     return this.products$;
   }

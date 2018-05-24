@@ -1,6 +1,6 @@
 import { IProductRequest } from '../nested-states/products/states';
 import { ICustomersRequest } from '../nested-states/customers/states';
-import { IItemRequestState } from '../nested-states/invoice-item/states/invoice-item.state';
+import { IItemRequestState } from '../nested-states/invoice-item/states';
 
 export interface IRequestState {
   productsGetState?: IProductRequest;

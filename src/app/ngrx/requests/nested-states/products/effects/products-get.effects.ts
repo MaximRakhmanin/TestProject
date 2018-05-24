@@ -17,7 +17,7 @@ export class ProductGetEffect {
   productGetRequest$: Observable<Action> = this.actions$
   .ofType(requestProductsActions.productsActionTypes.REQUEST)
   .switchMap(action => {
-    return this.productService.getProducts()
+    return this.productService.ProductsRequest()
     .map(products => new requestProductsActions.ProductGetSuccessAction(products))
     .catch(error => Observable.of(new requestProductsActions.ProductGetFailAction(error)));
   });

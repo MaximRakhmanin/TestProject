@@ -1,24 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/publish';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/operator/withLatestFrom';
 
+import { AppState } from '../../ngrx/app-state/app-state';
 import { InvoiceItem } from '../../models/invoice-item';
 import { DeleteItem, PostItem } from '../../ngrx/invoice-item/actions';
 
-import { Store } from '@ngrx/store';
-import { AppState } from '../../ngrx/app-state/app-state';
 import { GetListItem, PutItem } from '../../ngrx/invoice-item/actions';
 import { getCollectionsInvoiceItem} from '../../ngrx/invoice-item/states/invoice-item-getters.state';
 import {

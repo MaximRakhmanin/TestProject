@@ -115,7 +115,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
           product_id: product_id,
           quantity: 1,
         })
-        .take(1).do(console.log);
+        .take(1);
       }
       return Observable.of({product_id});
     })

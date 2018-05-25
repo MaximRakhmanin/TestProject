@@ -31,7 +31,11 @@ import { PostItemEffect } from '../ngrx/requests/nested-states/invoice-item/nest
 import { PutItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/put-item/effects';
 import { DeleteItemEffect } from '../ngrx/requests/nested-states/invoice-item/nested-states/delete-item/effects/delete-item.effects';
 import { InvoiceEffects } from '../ngrx/invoices/effects';
-import { InvoiceGetListEffect } from '../ngrx/requests/nested-states/invoices/nested-states/get-list-invoices/effects/get-list-invoices.effects';
+import { InvoiceGetListEffect } from '../ngrx/requests/nested-states/invoices/nested-states/get-list-invoices/effects';
+import { DeleteInvoiceEffect } from '../ngrx/requests/nested-states/invoices/nested-states/delete-invoice/effects';
+import { PostInvoiceEffect } from '../ngrx/requests/nested-states/invoices/nested-states/post-invoice/effects';
+import { PutInvoiceEffect } from '../ngrx/requests/nested-states/invoices/nested-states/put-invoice/effects';
+import { GetInvoiceEffect } from '../ngrx/requests/nested-states/invoices/nested-states/get-invoice/effects';
 
 
 @NgModule({
@@ -58,6 +62,10 @@ import { InvoiceGetListEffect } from '../ngrx/requests/nested-states/invoices/ne
       PutItemEffect,
       DeleteItemEffect,
       InvoiceGetListEffect,
+      DeleteInvoiceEffect,
+      PostInvoiceEffect,
+      PutInvoiceEffect,
+      GetInvoiceEffect
     ])
   ],
   providers: [

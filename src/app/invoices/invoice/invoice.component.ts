@@ -150,12 +150,12 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     .skip(1)
     .distinctUntilChanged()
     .subscribe(() => {
-      this.invoiceService.update(this.form.value);
+      this.invoiceService.updateInvoice(this.form.value);
     });
 
     // create invoice
     this.requestInvoice$ = this.saveForm$
-    .switchMap(invoice => this.invoiceService.setInvoice(invoice))
+    .switchMap(invoice => this.invoiceService.createInvoice(invoice))
     .shareReplay(1);
 
     this.subscriptions.addedInvoice = this.requestInvoice$

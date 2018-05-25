@@ -39,21 +39,20 @@ export class InvoiceListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.invoices$ = this.invoiceService.invoices$;
     this.deleteInvoiceSubscription = this.deleteInvoice
-    .switchMap(id => {
+    .switchMap(invoice => {
       return this.modalService.openModal('delete', 'Are you sure you want to delete ??')
       .filter(choice => choice)
-      .mapTo(id);
+      .mapTo(invoice);
     })
-    .mergeMap(id => this.invoiceService.delete(id))
+    .mergeMap(invoice => this.invoiceService.deleteInvoice(invoice))
     .subscribe(() => console.log('deleteInvoice'));
   }
-
   ngOnDestroy() {
     this.deleteInvoiceSubscription.unsubscribe();
   }
 
-  remove(id) {
-    this.deleteInvoice.next(id);
+  remove(invoice) {
+    this.deleteInvoice.next(invoice);
   }
 
 }

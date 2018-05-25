@@ -1,4 +1,4 @@
-import { ItemPostActionTypes } from '../../post-item/actions';
+import { ItemPutActionTypes } from '../../post-item/actions';
 import { IItemPut, itemPutInitialState } from '../states';
 import { ItemPutActions } from '../actions';
 
@@ -7,7 +7,7 @@ export function ItemPutReducer(
   {type, payload}: ItemPutActions
 ) {
   switch (type) {
-    case ItemPostActionTypes.REQUEST: {
+    case ItemPutActionTypes.REQUEST: {
       return {
         ...state,
         loading: true,
@@ -16,8 +16,8 @@ export function ItemPutReducer(
         data: null
       };
     }
-    case ItemPostActionTypes.REQUEST_SUCCESS:
-    case ItemPostActionTypes.REQUEST_FAIL:
+    case ItemPutActionTypes.REQUEST_SUCCESS:
+    case ItemPutActionTypes.REQUEST_FAIL:
       return {
         ...state,
         loading: false,

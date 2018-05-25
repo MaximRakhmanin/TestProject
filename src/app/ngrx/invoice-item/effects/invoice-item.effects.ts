@@ -9,11 +9,11 @@ import 'rxjs/add/operator/map';
 import * as invoiceItem from '../actions';
 import * as requestItems from '../../requests/nested-states/invoice-item/actions';
 import {
-  ItemPostActionTypes,
+  ItemPutActionTypes,
   PostItemAction
 } from '../../requests/nested-states/invoice-item/nested-states/post-item/actions';
 import {
-  ItemPutActionTypes,
+  ItemsPutActionTypes,
   PutItemAction
 } from '../../requests/nested-states/invoice-item/nested-states/put-item/actions';
 import {
@@ -46,7 +46,7 @@ export class InvoiceItemEffects {
 
   @Effect()
   itemPostRequest$ = this.actions$
-  .ofType(ItemPostActionTypes.REQUEST_SUCCESS)
+  .ofType(ItemsPutActionTypes.REQUEST_SUCCESS)
   .map((action: any) => {
     return new invoiceItem.PostItemSuccessFull([action.payload]);
   });
@@ -60,7 +60,7 @@ export class InvoiceItemEffects {
 
   @Effect()
   itemPutRequest$ = this.actions$
-  .ofType(ItemPutActionTypes.REQUEST_SUCCESS)
+  .ofType(ItemsPutActionTypes.REQUEST_SUCCESS)
   .map((action: any) => {
     return new invoiceItem.PutItemSuccessFull([action.payload]);
   });

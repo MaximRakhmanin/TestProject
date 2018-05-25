@@ -17,6 +17,7 @@ export const getCollectionIdsInvoice = createSelector(
 export const getCollectionsInvoices = createSelector(
   getCollectionEntitiesInvoice,
   getCollectionIdsInvoice,
-  (entities, ids) =>
-    ids.filter(id => entities[id]).map(id => entities[id])
+  (entities, ids) => {
+    return ids.filter(id => entities[id]).map(id => entities[id]);
+  }
 );

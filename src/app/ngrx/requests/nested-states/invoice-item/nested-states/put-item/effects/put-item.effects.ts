@@ -16,7 +16,7 @@ export class PutItemEffect {
 
   @Effect()
   itemGetRequest$: Observable<Action> = this.actions$
-  .ofType(requestItem.ItemPutActionTypes.REQUEST)
+  .ofType(requestItem.ItemsPutActionTypes.REQUEST)
   .switchMap((action: any) => {
     return this.invoiceItemService.updateRequest(action.payload)
     .map(items => new requestItem.PutItemSuccessAction(items))

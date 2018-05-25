@@ -11,6 +11,8 @@ export const Put_Invoice = `[${INVOICES}] Put_Invoice`;
 export const Put_Invoice_Success_full = `[${INVOICES}] Put_Invoice_Success_full`;
 export const Delete_Invoice = `[${INVOICES}] Delete_Invoice`;
 export const Delete_Invoice_Success_full = `[${INVOICES}] Delete_Invoice_Success_full`;
+export const Get_Invoice = `[${INVOICES}] Get_Invoice`;
+export const Get_Invoice_Success_Full = `[${INVOICES}] Get_Invoice_Success_Full`;
 
 export class GetListInvoices implements Action {
 
@@ -24,6 +26,20 @@ export class GetListSuccessFullInvoices implements Action {
   readonly type = Get_List_Success_full;
 
   constructor(public payload: Invoice[]) {}
+}
+
+export class GetInvoice implements Action {
+
+  readonly type = Get_Invoice;
+
+  constructor(public payload: any) {}
+}
+
+export class GetInvoiceSuccessFull implements Action {
+
+  readonly  type = Get_Invoice_Success_Full;
+
+  constructor(public payload: any) {}
 }
 
 export class PostInvoice implements Action {
